@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app>
+    <v-app-bar app elevation="0" style="background-color: white">
       <v-img
           id="mooc-logo"
           alt="Mooc Logo"
@@ -16,6 +16,7 @@
     <v-main id="home-container">
       <v-container fluid>
         <div class="d-flex justify-center">
+<!--          课程分类卡片-->
           <div class="d-flex flex-column flex-nowrap course-column pa-4">
             <div v-for="(course,i) in courses" :key="i" class="mb-2">
               <span class="mr-2">{{course.main_category}}</span>
@@ -25,16 +26,42 @@
               </span>
             </div>
           </div>
+<!--          轮播图-->
           <v-carousel cycle show-arrows-on-hover class="course-carousel mx-4">
             <v-carousel-item v-for="(item,i) in items" :key="i" :src="item.src"></v-carousel-item>
           </v-carousel>
+<!--          登录卡片-->
           <div class="user-column d-flex flex-column">
             <span class="pa-3 text-center">免费学习来自名校老师的精品课程</span>
             <div class="d-flex flex-column justify-start mt-6">
               <v-img class="align-self-center mb-4" contain src="http://edu-image.nosdn.127.net/6e66dbdc55464a44889c6a25428b2b4b.png?imageView&quality=100" max-width="100px" max-height="150px"/>
-              <v-btn class="user-btn ma-4" rounded text>登录/注册</v-btn>
+              <v-btn class="user-btn ma-5" rounded text>登录/注册</v-btn>
             </div>
           </div>
+        </div>
+<!--        编辑推荐-->
+        <div class="mt-5 d-flex flex-column justify-center">
+          <div class="recommend-title mx-auto my-4">编辑推荐</div>
+          <div class="recommend-course">
+            <v-sheet class="mx-auto" elevation="0" max-width="1150">
+              <v-slide-group v-model="selected" class="pa-4" active-class="success" show-arrows>
+                <v-slide-item v-for="(item,i) in courseIntroductions" :key="i">
+                  <v-card class="item-card ma-4" height="252" width="224">
+                    <course-introduction-card :course-image="item.image" :course-name="item.name" :department="item.department" :author="item.author" :participants-number="item.number"  />
+                  </v-card>
+                </v-slide-item>
+              </v-slide-group>
+            </v-sheet>
+          </div>
+        </div>
+<!--        热门分类-->
+        <div class="popular-categories mt-5 d-flex flex-column justify-center">
+          <div class="category-title mx-auto my-4">热门分类</div>
+          <v-sheet class="mx-auto transparent" elevation="0" max-width="1150">
+            <v-chip-group active-class="success" column>
+              <v-chip class="mt-3 mr-3 px-7" style="background-color: rgba(0,0,0,0.04)" v-for="(category, i) in categories" :key="i">{{category}}</v-chip>
+            </v-chip-group>
+          </v-sheet>
         </div>
       </v-container>
     </v-main>
@@ -43,8 +70,10 @@
 
 <script>
 
+  import CourseIntroductionCard from "../components/CourseIntroductionCard";
   export default {
     name: 'Home',
+    components: {CourseIntroductionCard},
     data() {
       return {
         items: [
@@ -77,6 +106,59 @@
           {
             main_category: '工学',
             sub_category: ['力学','材料']
+          }
+        ],
+        selected: null,
+        categories: ['国家精品','期末不挂','22/23考研','考研冲刺','大学应试英语','实用英语','限时公开课','名师专栏','考证就业','计算机','音乐学院','外语','理学','工学','经济管理'],
+        courseIntroductions: [
+          {
+            image:'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
+            name: '基础设计',
+            department:'浙江理工大学',
+            author: 'harkcy',
+            number: 29,
+          },
+          {
+            image:'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
+            name: '通信电路与系统',
+            department:'华东理工大学',
+            author: 'ck',
+            number: 58,
+          },
+          {
+            image:'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
+            name: '《说文解字》与上古社会',
+            department:'武汉大学',
+            author: 'jason',
+            number: 51,
+          },
+          {
+            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+            name: '分子生物学',
+            department:'南京大学',
+            author: 'chunk',
+            number: 590,
+          },
+          {
+            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+            name: '分子生物学',
+            department:'南京大学',
+            author: 'chunk',
+            number: 590,
+          },
+          {
+            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+            name: '分子生物学',
+            department:'南京大学',
+            author: 'chunk',
+            number: 590,
+          },
+          {
+            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+            name: '分子生物学',
+            department:'南京大学',
+            author: 'chunk',
+            number: 590,
           }
         ]
       }
@@ -141,4 +223,12 @@
     color: white;
   }
 }
+
+.recommend-title, .category-title {
+  text-align: start;
+  max-width: 1150px;
+  min-width: 1150px;
+  font-size: 20px;
+}
+
 </style>
