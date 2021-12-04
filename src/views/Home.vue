@@ -9,7 +9,7 @@
           src="https://edu-image.nosdn.127.net/3310f128e53b406f94400f7ae6046db2.png?imageView&quality=100"
           transition="scale-transition"
           width="40"/>
-      <v-btn class="register-login-btn" text plain>
+      <v-btn class="register-login-btn" text plain @click="pushLogin">
         <span>登录 | 注册</span>
       </v-btn>
     </v-app-bar>
@@ -35,7 +35,7 @@
             <span class="pa-3 text-center">免费学习来自名校老师的精品课程</span>
             <div class="d-flex flex-column justify-start mt-6">
               <v-img class="align-self-center mb-4" contain src="http://edu-image.nosdn.127.net/6e66dbdc55464a44889c6a25428b2b4b.png?imageView&quality=100" max-width="100px" max-height="150px"/>
-              <v-btn class="user-btn ma-5" rounded text>登录/注册</v-btn>
+              <v-btn class="user-btn ma-5" rounded text @click="pushLogin">登录/注册</v-btn>
             </div>
           </div>
         </div>
@@ -63,6 +63,66 @@
             </v-chip-group>
           </v-sheet>
         </div>
+<!--        登陆注册对话框-->
+        <v-overlay :value="overlay">
+          <v-dialog v-model="overlay" max-width="500">
+            <v-card v-show="isLogin">
+              <v-card-title>
+                <span class="text-h5">用户登录</span>
+              </v-card-title>
+              <v-divider class="mb-5" />
+              <v-card-text>
+                <v-container id="login-dialog">
+                  <v-row justify="center">
+                    <v-col cols="10">
+                      <v-text-field label="请输入手机号" required outlined prepend-inner-icon="mdi-cellphone"></v-text-field>
+                    </v-col>
+                    <v-col cols="10">
+                      <v-text-field label="请输入密码" type="password" required outlined prepend-inner-icon="mdi-lock"></v-text-field>
+                    </v-col>
+                    <v-col cols="10">
+                      <v-btn color="#00CC7E" block>
+                        <span style="color: white">登录</span>
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="10">
+                      <v-checkbox class="auto-check" color="success" label="十天内免登录" value="auto_login" />
+                      <span class="register-text mt-4 pt-1 text-decoration-underline" style="color: #00CC7E" @click="pushRegister">
+                        去注册
+                      </span>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-card>
+            <v-card v-show="!isLogin">
+              <v-card-title>
+                <span class="text-h5">手机号注册</span>
+              </v-card-title>
+              <v-divider class="mb-5" />
+              <v-card-text>
+                <v-container id="register-dialog">
+                  <v-row justify="center">
+                    <v-col cols="10">
+                      <v-text-field label="请输入手机号" required outlined prepend-inner-icon="mdi-cellphone"></v-text-field>
+                    </v-col>
+                    <v-col cols="10">
+                      <v-text-field label="8到16位密码" required outlined prepend-inner-icon="mdi-lock"></v-text-field>
+                    </v-col>
+                    <v-col cols="10">
+                      <v-btn color="#00CC7E" block>
+                        <span style="color: white">注册并登录</span>
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="10">
+                      <span class="register-text mt-4 pt-1 text-decoration-underline" style="color: #00CC7E" @click="pushLogin">已有账号，去登录</span>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </v-overlay>
       </v-container>
     </v-main>
   </v-app>
@@ -76,6 +136,8 @@
     components: {CourseIntroductionCard},
     data() {
       return {
+        overlay: false,
+        isLogin: true,
         items: [
           {
             src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
@@ -162,6 +224,15 @@
           }
         ]
       }
+    },
+    methods: {
+      pushLogin() {
+        this.overlay = true
+        this.isLogin = true
+      },
+      pushRegister() {
+        this.isLogin = false
+      }
     }
   }
 </script>
@@ -231,4 +302,18 @@
   font-size: 20px;
 }
 
+::v-deep .col {
+  padding: 0;
+}
+
+.auto-check {
+  float: left;
+}
+
+.register-text {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 400;
+  float: right;
+}
 </style>
