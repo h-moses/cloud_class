@@ -138,6 +138,7 @@
       return {
         overlay: false,
         isLogin: true,
+        banners: [],
         items: [
           {
             src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
@@ -225,6 +226,9 @@
         ]
       }
     },
+    created() {
+      this.getBanner()
+    },
     methods: {
       pushLogin() {
         this.overlay = true
@@ -232,6 +236,15 @@
       },
       pushRegister() {
         this.isLogin = false
+      },
+      async getBanner() {
+        const result = await this.$axios.post("http://101.133.173.40:8090/edusys/banner/getAll", {'type': 'stu_home'})
+        if (result.status === 200) {
+          console.log(result.data)
+        } else {
+          console.log("failure")
+        }
+
       }
     }
   }
