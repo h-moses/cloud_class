@@ -177,7 +177,7 @@
             image:'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
             name: '基础设计',
             department:'浙江理工大学',
-            author: 'harkcy',
+            author: 'hacky',
             number: 29,
           },
           {
