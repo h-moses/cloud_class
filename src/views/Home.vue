@@ -28,7 +28,7 @@
           </div>
 <!--          轮播图-->
           <v-carousel cycle show-arrows-on-hover class="course-carousel mx-4">
-            <v-carousel-item v-for="(item,i) in items" :key="i" :src="item.src"></v-carousel-item>
+            <v-carousel-item v-for="(item,i) in banners" :key="i" :src="item.cover"></v-carousel-item>
           </v-carousel>
 <!--          登录卡片-->
           <div class="user-column d-flex flex-column">
@@ -139,20 +139,7 @@
         overlay: false,
         isLogin: true,
         banners: [],
-        items: [
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-          },
-        ],
+
         courses: [
           {
             main_category: '计算机',
@@ -238,13 +225,11 @@
         this.isLogin = false
       },
       async getBanner() {
-        const result = await this.$axios.post("http://101.133.173.40:8090/edusys/banner/getAll", {'type': 'stu_home'})
-        if (result.status === 200) {
-          console.log(result.data)
-        } else {
-          console.log("failure")
+        const {data:res} = await this.$axios.post("banner/getAll", {'type': 'stu_home'})
+        if (res.status === 200 && res.data !== []) {
+          console.log(res.data)
+          this.banners = res.data
         }
-
       }
     }
   }
