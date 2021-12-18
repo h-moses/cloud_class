@@ -9,8 +9,8 @@
           src="https://edu-image.nosdn.127.net/3310f128e53b406f94400f7ae6046db2.png?imageView&quality=100"
           transition="scale-transition"
           width="40"/>
-      <v-btn class="register-login-btn" text plain @click="pushLogin">
-        <span>登录 | 注册</span>
+      <v-btn class="register-login-btn" text plain @click="hasLogin ? pushDetail: pushLogin">
+        <span>{{ username }}</span>
       </v-btn>
     </v-app-bar>
     <v-main id="home-container">
@@ -18,11 +18,11 @@
         <div class="d-flex justify-center">
 <!--          课程分类卡片-->
           <div class="d-flex flex-column flex-nowrap course-column pa-4">
-            <div v-for="(course,i) in courses" :key="i" class="mb-2">
-              <span class="mr-2">{{course.main_category}}</span>
-              <span v-for="(sub,j) in course.sub_category" :key="j" class="sub-category">
-                <a title="sub">{{sub}}</a>
-                <span v-if="j < course.sub_category.length - 1"> / </span>
+            <div v-for="firstCategory in allCategories" :key="firstCategory.id" class="mb-2">
+              <span class="mr-2">{{firstCategory.name}}</span>
+              <span v-for="(secondCategory,i) in firstCategory.children" :key="secondCategory.id" class="sub-category">
+                <a title="secondCategory.name">{{secondCategory.name}}</a>
+                <span v-if="i !== firstCategory.children.length - 1"> / </span>
               </span>
             </div>
           </div>
@@ -32,22 +32,22 @@
           </v-carousel>
 <!--          登录卡片-->
           <div class="user-column d-flex flex-column">
-            <span class="pa-3 text-center">免费学习来自名校老师的精品课程</span>
+            <span class="pa-3 text-center">{{welcome}}</span>
             <div class="d-flex flex-column justify-start mt-6">
-              <v-img class="align-self-center mb-4" contain src="http://edu-image.nosdn.127.net/6e66dbdc55464a44889c6a25428b2b4b.png?imageView&quality=100" max-width="100px" max-height="150px"/>
-              <v-btn class="user-btn ma-5" rounded text @click="pushLogin">登录/注册</v-btn>
+              <v-img class="align-self-center mb-4" contain :src="this.userAvatar" max-width="100px" max-height="150px"/>
+              <v-btn v-show="!hasLogin" class="user-btn ma-5" rounded text @click="pushLogin">{{ username }}</v-btn>
             </div>
           </div>
         </div>
 <!--        编辑推荐-->
-        <div class="mt-5 d-flex flex-column justify-center">
-          <div class="recommend-title mx-auto my-4">编辑推荐</div>
+        <div class="mt-5 d-flex flex-column justify-center" v-for="item in allCourse" :key="item.id">
+          <div class="recommend-title mx-auto my-4">{{ item.name }}</div>
           <div class="recommend-course">
             <v-sheet class="mx-auto" elevation="0" max-width="1150">
               <v-slide-group v-model="selected" class="pa-4" active-class="success" show-arrows>
-                <v-slide-item v-for="(item,i) in courseIntroductions" :key="i">
+                <v-slide-item v-for="course in item.courseList" :key="course.cid">
                   <v-card class="item-card ma-4" height="252" width="224">
-                    <course-introduction-card :course-image="item.image" :course-name="item.name" :department="item.department" :author="item.author" :participants-number="item.number"  />
+                    <course-introduction-card :course-image="course.cover" :course-name="course.title" :department="course.user.nick_name"/>
                   </v-card>
                 </v-slide-item>
               </v-slide-group>
@@ -75,19 +75,19 @@
                 <v-container id="login-dialog">
                   <v-row justify="center">
                     <v-col cols="10">
-                      <v-text-field label="请输入手机号" required outlined prepend-inner-icon="mdi-cellphone"></v-text-field>
+                      <v-text-field v-model="loginForm.phone" label="请输入手机号" required outlined prepend-inner-icon="mdi-cellphone"></v-text-field>
                     </v-col>
                     <v-col cols="10">
-                      <v-text-field label="请输入密码" type="password" required outlined prepend-inner-icon="mdi-lock"></v-text-field>
+                      <v-text-field v-model="loginForm.pwd" label="请输入密码" type="password" required outlined prepend-inner-icon="mdi-lock"></v-text-field>
                     </v-col>
                     <v-col cols="10">
-                      <v-btn color="#00CC7E" block>
+                      <v-btn color="#00CC7E" block @click="login">
                         <span style="color: white">登录</span>
                       </v-btn>
                     </v-col>
                     <v-col cols="10">
-                      <v-checkbox class="auto-check" color="success" label="十天内免登录" value="auto_login" />
-                      <span class="register-text mt-4 pt-1 text-decoration-underline" style="color: #00CC7E" @click="pushRegister">
+<!--                      <v-checkbox class="auto-check" color="success" label="十天内免登录" value="auto_login" />-->
+                      <span class="register-text mt-4 pt-1 text-decoration-underline" style="color: #00CC7E" @click="switchLR(false)">
                         去注册
                       </span>
                     </v-col>
@@ -125,6 +125,9 @@
         </v-overlay>
       </v-container>
     </v-main>
+    <v-snackbar
+        v-model="snackbar"
+    >{{ text }}</v-snackbar>
   </v-app>
 </template>
 
@@ -139,25 +142,8 @@
         overlay: false,
         isLogin: true,
         banners: [],
-
-        courses: [
-          {
-            main_category: '计算机',
-            sub_category: ['大数据与人工智能','软件工程']
-          },
-          {
-            main_category: '外语',
-            sub_category: ['听力','口语','写作','翻译']
-          },
-          {
-            main_category: '理学',
-            sub_category: ['数学','物理','化学','天文学']
-          },
-          {
-            main_category: '工学',
-            sub_category: ['力学','材料']
-          }
-        ],
+        allCourse: [],
+        allCategories: [],
         selected: null,
         categories: ['国家精品','期末不挂','22/23考研','考研冲刺','大学应试英语','实用英语','限时公开课','名师专栏','考证就业','计算机','音乐学院','外语','理学','工学','经济管理'],
         courseIntroductions: [
@@ -210,27 +196,88 @@
             author: 'chunk',
             number: 590,
           }
-        ]
+        ],
+        loginForm: {
+          phone: '',
+          pwd: '',
+          role: 1
+        },
+        rules: {
+          required: value => !!value || '不能为空',
+          phone: value => {
+            const pattern = /^1[3-9]\d{9}$/
+            return pattern.test(value) || '手机号不合法'
+          }
+        },
+        username: '登录 | 注册',
+        userAvatar: 'http://edu-image.nosdn.127.net/6e66dbdc55464a44889c6a25428b2b4b.png?imageView&quality=100',
+        userProfile: {},
+        text: '该用户不存在',
+        snackbar: false,
+        hasLogin: false,
+        welcome: '免费学习来自名校老师的精品课程',
       }
     },
     created() {
       this.getBanner()
+      this.getAllCourse()
+      this.getAllCategories()
     },
     methods: {
       pushLogin() {
         this.overlay = true
         this.isLogin = true
       },
-      pushRegister() {
-        this.isLogin = false
+      switchLR(isLogin) {
+        this.isLogin = isLogin
+      },
+      pushDetail() {
+        this.$router.push('/user')
       },
       async getBanner() {
         const {data:res} = await this.$axios.post("banner/getAll", {'type': 'stu_home'})
         if (res.status === 200 && res.data !== []) {
-          console.log(res.data)
           this.banners = res.data
         }
+      },
+      async getAllCourse() {
+        const {data:res} = await this.$axios.get('course/getAllCourseSortByCategory')
+        if (res.status === 200 && res.data !== []) {
+          this.allCourse = res.data
+        }
+      },
+      async getAllCategories() {
+        const {data: res} = await this.$axios.get('course_category/getTreeList')
+        if (res.status === 200 && res.data !== []) {
+          this.allCategories = res.data
+        }
+      },
+      async login() {
+        console.log(this.loginForm)
+        const {data: res} = await this.$axios.post('user/login', this.loginForm)
+        if (res.status === 200 && res.data !== {}) {
+          this.userProfile = res.data
+          this.userAvatar = res.data.avatar
+          this.username = res.data.nick_name
+          this.overlay = false
+          this.hasLogin = true
+          this.welcome = '欢迎回来，' + this.username
+          window.localStorage.setItem("uid",res.data.uid)
+        } else {
+          this.snackbar = true
+        }
       }
+      // async post(url, params) {
+      //   const {data: res} = await this.$axios.post(url, params)
+      //   if (res.status === 200 && res.data !== []) {
+      //   }
+      // },
+      // async get(url) {
+      //   const {data: res} = await this.$axios.get(url)
+      //   if (res.status === 200 && res.data !== []) {
+      //
+      //   }
+      // }
     }
   }
 </script>
@@ -269,9 +316,11 @@
 
 .course-column {
   @include column_base;
+  overflow: hidden;  /*超出宽度部分隐藏*/
+  text-overflow: ellipsis;  /*超出部分以点号代替*/
 
   ::v-deep .sub-category {
-    color: #eee;
+    color: #999999;
     font-size: 12px;
 
     a {
