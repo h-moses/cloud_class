@@ -1,9 +1,9 @@
 <template>
   <div id="course-introduction-card">
-    <v-img :src="courseImage" min-height="126" max-height="126"></v-img>
+    <v-img :src="course.cover" min-height="126" max-height="126"></v-img>
     <div class="mx-2 ">
-      <div class="title" style="font-size: 14px !important;">{{courseName}}</div>
-      <div class="department" v-if="department !== null">{{department}}</div>
+      <div class="title" style="font-size: 14px !important;">{{course.title}}</div>
+      <div class="department" v-if="department !== null">{{course.user.nick_name}}</div>
     </div>
   </div>
 </template>
@@ -12,24 +12,19 @@
 export default {
   name: "CourseIntroductionCard",
   props: {
-    courseImage: {
-      type: String,
+    course: {
+      type: Object,
       required: true
-    },
-    courseName: {
-      type: String,
-      required: true
-    },
-    department: {
-      type: String,
-      required: true
-    },
+    }
   },
   data() {
     return {
 
     }
   },
+  methods: {
+
+  }
 }
 </script>
 

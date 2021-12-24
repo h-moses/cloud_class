@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3023760 */
+  /* Color fonts */
+  src: 
+       url('iconfont.woff2?t=1640368224465') format('woff2'),
+       url('iconfont.woff?t=1640368224465') format('woff'),
+       url('iconfont.ttf?t=1640368224465') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shuxian:before {
+  content: "\e638";
+}
+
+.icon-Open-Bookmark:before {
+  content: "\ebd3";
+}
+
+.icon-zonghexiaoqingpeizhi-01:before {
+  content: "\e62c";
+}
+

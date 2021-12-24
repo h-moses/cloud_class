@@ -39,15 +39,15 @@
             </div>
           </div>
         </div>
-<!--        编辑推荐-->
+<!--        不同类别的课程-->
         <div class="mt-5 d-flex flex-column justify-center" v-for="item in allCourse" :key="item.id">
           <div class="recommend-title mx-auto my-4">{{ item.name }}</div>
           <div class="recommend-course">
             <v-sheet class="mx-auto" elevation="0" max-width="1150">
               <v-slide-group v-model="selected" class="pa-4" active-class="success" show-arrows>
                 <v-slide-item v-for="course in item.courseList" :key="course.cid">
-                  <v-card class="item-card ma-4" height="252" width="224">
-                    <course-introduction-card :course-image="course.cover" :course-name="course.title" :department="course.user.nick_name"/>
+                  <v-card class="item-card ma-4" height="252" width="224" ripple @click="pushIntroduction(course.cid)">
+                    <course-introduction-card :course="course"/>
                   </v-card>
                 </v-slide-item>
               </v-slide-group>
@@ -55,14 +55,14 @@
           </div>
         </div>
 <!--        热门分类-->
-        <div class="popular-categories mt-5 d-flex flex-column justify-center">
-          <div class="category-title mx-auto my-4">热门分类</div>
-          <v-sheet class="mx-auto transparent" elevation="0" max-width="1150">
-            <v-chip-group active-class="success" column>
-              <v-chip class="mt-3 mr-3 px-7" style="background-color: rgba(0,0,0,0.04)" v-for="(category, i) in categories" :key="i">{{category}}</v-chip>
-            </v-chip-group>
-          </v-sheet>
-        </div>
+<!--        <div class="popular-categories mt-5 d-flex flex-column justify-center">-->
+<!--          <div class="category-title mx-auto my-4">热门分类</div>-->
+<!--          <v-sheet class="mx-auto transparent" elevation="0" max-width="1150">-->
+<!--            <v-chip-group active-class="success" column>-->
+<!--              <v-chip class="mt-3 mr-3 px-7" style="background-color: rgba(0,0,0,0.04)" v-for="(category, i) in categories" :key="i">{{category}}</v-chip>-->
+<!--            </v-chip-group>-->
+<!--          </v-sheet>-->
+<!--        </div>-->
 <!--        登陆注册对话框-->
         <v-overlay :value="overlay">
           <v-dialog v-model="overlay" max-width="500">
@@ -125,9 +125,7 @@
         </v-overlay>
       </v-container>
     </v-main>
-    <v-snackbar
-        v-model="snackbar"
-    >{{ text }}</v-snackbar>
+    <v-snackbar v-model="snackbar">{{ text }}</v-snackbar>
   </v-app>
 </template>
 
@@ -145,58 +143,7 @@
         allCourse: [],
         allCategories: [],
         selected: null,
-        categories: ['国家精品','期末不挂','22/23考研','考研冲刺','大学应试英语','实用英语','限时公开课','名师专栏','考证就业','计算机','音乐学院','外语','理学','工学','经济管理'],
-        courseIntroductions: [
-          {
-            image:'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-            name: '基础设计',
-            department:'浙江理工大学',
-            author: 'hacky',
-            number: 29,
-          },
-          {
-            image:'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-            name: '通信电路与系统',
-            department:'华东理工大学',
-            author: 'ck',
-            number: 58,
-          },
-          {
-            image:'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-            name: '《说文解字》与上古社会',
-            department:'武汉大学',
-            author: 'jason',
-            number: 51,
-          },
-          {
-            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-            name: '分子生物学',
-            department:'南京大学',
-            author: 'chunk',
-            number: 590,
-          },
-          {
-            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-            name: '分子生物学',
-            department:'南京大学',
-            author: 'chunk',
-            number: 590,
-          },
-          {
-            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-            name: '分子生物学',
-            department:'南京大学',
-            author: 'chunk',
-            number: 590,
-          },
-          {
-            image:'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-            name: '分子生物学',
-            department:'南京大学',
-            author: 'chunk',
-            number: 590,
-          }
-        ],
+        // categories: ['国家精品','期末不挂','22/23考研','考研冲刺','大学应试英语','实用英语','限时公开课','名师专栏','考证就业','计算机','音乐学院','外语','理学','工学','经济管理'],
         loginForm: {
           phone: '',
           pwd: '',
@@ -234,6 +181,9 @@
       pushDetail() {
         this.$router.push('/user')
       },
+      pushIntroduction(id) {
+        this.$router.push({name: 'CourseIntroduction', query: {'cid': id}})
+      },
       async getBanner() {
         const {data:res} = await this.$axios.post("banner/getAll", {'type': 'stu_home'})
         if (res.status === 200 && res.data !== []) {
@@ -267,17 +217,6 @@
           this.snackbar = true
         }
       }
-      // async post(url, params) {
-      //   const {data: res} = await this.$axios.post(url, params)
-      //   if (res.status === 200 && res.data !== []) {
-      //   }
-      // },
-      // async get(url) {
-      //   const {data: res} = await this.$axios.get(url)
-      //   if (res.status === 200 && res.data !== []) {
-      //
-      //   }
-      // }
     }
   }
 </script>
@@ -293,10 +232,6 @@
   justify-content: space-around;
 }
 
-#home-container {
-  background-color: #F7F7F7;
-}
-
 #mooc-logo {
   min-width: 250px;
   max-width: 250px;
@@ -307,6 +242,10 @@
   &:hover {
     color: #00c758;
   }
+}
+
+#home-container {
+  background-color: #F7F7F7;
 }
 
 .course-carousel {

@@ -1,0 +1,30 @@
+{
+  "id": "3023760",
+  "name": "mosea_class",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "6941232",
+      "name": "竖线",
+      "font_class": "shuxian",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "6807160",
+      "name": "Open-Bookmark",
+      "font_class": "Open-Bookmark",
+      "unicode": "ebd3",
+      "unicode_decimal": 60371
+    },
+    {
+      "icon_id": "14197371",
+      "name": "综合校情配置-01",
+      "font_class": "zonghexiaoqingpeizhi-01",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    }
+  ]
+}

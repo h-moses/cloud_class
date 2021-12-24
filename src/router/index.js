@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import CourseIntroduction from "../views/CourseIntroduction";
+import CourseLearning from "../views/CourseLearning";
 
 Vue.use(VueRouter)
 
@@ -18,6 +20,19 @@ const routes = [
   //   // which is lazy-loaded when the route is visited.
   //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   // }
+  {
+    path: '/course',
+    name: 'CourseIntroduction',
+    component: CourseIntroduction,
+    children: [
+      {
+        path: '/learn',
+        name: 'CourseLearning',
+        component: CourseLearning
+      }
+
+    ]
+  },
 ]
 
 const router = new VueRouter({
