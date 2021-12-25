@@ -49,6 +49,57 @@
               </v-tab-item>
               <v-tab-item>
                 <template #default>
+                  <div class="comment-section">
+                    <div class="comment-course-comment">
+                      <div class="comment-course-comment_head">
+                        <div class="comment-course-comment_head_rating-scores">
+                          <span>4.4</span>
+                        </div>
+                        <div class="comment-course-comment_head_rating-action">
+                          <div class="comment-course-comment_head_rating-action_rate">
+                            <v-rating
+                                background-color="red lighten-2"
+                                color="red"
+                                half-increments
+                                readonly
+                                length="5"
+                                size="28"
+                                value="3"
+                            ></v-rating>
+                          </div>
+                          <div class="comment-course-comment_head_rating-action_tips">
+                            <span>共17条评价</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="comment-course-comment_comment-list">
+                        <div class="comment-course-comment_comment-list_item">
+                          <v-avatar class="f-f2" size="56">
+                            <img src="https://cdn.vuetifyjs.com/images/john.jpg">
+                          </v-avatar>
+                          <div class="comment-course-comment_comment-list_item_body">
+                            <div class="comment-course-comment_comment-list_item_body_user-info f-f2">
+                              <span class="comment-course-comment_comment-list_item_body_user-info_name text-body-1">相约吃泡面</span>
+                              <span>
+                                <v-rating
+                                    background-color="red lighten-2"
+                                    color="red"
+                                    half-increments
+                                    readonly
+                                    length="5"
+                                    size="15"
+                                    value="3"
+                                ></v-rating>
+                              </span>
+                            </div>
+                            <div class="comment-course-comment_comment-list_item_body_content f-f2">
+                              <span>{{comment_content}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </template>
               </v-tab-item>
             </v-tabs-items>
@@ -180,6 +231,8 @@ export default {
           ],
         },
       ],
+      comment_content: '主要是为了来了解大数据预测血糖的技术hhh\n' +
+          '不愧是浙大的老师，颜值高讲的也很好，非常专业，美中不足就是涉及到很多机器学习和数理统计的知识，节奏比较快一带而过，算法的部分缺乏推导，不是很清晰。课程进度非常友好，三个月学完了这十章，非常认真的记了一个笔记本。期待以后还会有老师的课'
     }
   },
   methods: {
@@ -248,7 +301,7 @@ export default {
 }
 
 .m-main {
-  margin: 0 200px 100px;
+  margin: 0 200px;
 
   .f1 {
     margin-right: 315px;
@@ -261,12 +314,8 @@ export default {
     // 确保教师模块排列在右边
     float: left;
 
-    .m-information-tabs {
-
-      .v-tab {
-        font-weight: bold;
-      }
-
+    .v-tab {
+      font-weight: bold;
     }
 
     .category-title {
@@ -276,6 +325,72 @@ export default {
         font-size: 1.05rem;
         font-weight: bold;
         vertical-align: middle;
+      }
+    }
+
+    .comment-course-comment {
+      padding: 46px 0 60px;
+
+      .comment-course-comment_head {
+        overflow: hidden;
+        margin-bottom: 14px;
+
+        .comment-course-comment_head_rating-scores, .comment-course-comment_head_rating-action {
+          float: left;
+        }
+
+        .comment-course-comment_head_rating-scores {
+          font-size: 48px;
+          width: 73px;
+          color: #FF7A3E;
+          font-weight: bold;
+          margin-right: 15px;
+        }
+
+        .comment-course-comment_head_rating-action {
+          margin-top: 12px;
+        }
+
+        .comment-course-comment_head_rating-action_tips {
+          font-size: 13px;
+          color: #999999;
+          margin-left: 12px;
+        }
+      }
+
+      .comment-course-comment_comment-list {
+
+        .comment-course-comment_comment-list_item {
+          padding-top: 30px;
+        }
+
+        .f-f2 {
+          float: left;
+        }
+
+        .comment-course-comment_comment-list_item_body {
+          overflow: hidden;
+          position: relative;
+          left: 1%;
+
+          .comment-course-comment_comment-list_item_body_user-info {
+            margin-bottom: 9px;
+
+            .comment-course-comment_comment-list_item_body_user-info_name{
+              min-height: 31px;
+            }
+          }
+
+          .comment-course-comment_comment-list_item_body_content {
+            color: rgb(102, 102, 102);
+            font-size: 14px;
+            letter-spacing: 1.5px;
+          }
+        }
+
+
+
+
       }
     }
   }
