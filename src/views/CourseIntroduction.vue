@@ -47,7 +47,30 @@
                   </div>
                 </template>
               </v-tab-item>
+              <v-tab-item>
+                <template #default>
+                </template>
+              </v-tab-item>
             </v-tabs-items>
+          </div>
+          <div class="m-sdinfo">
+            <div class="m-teachers_teacher-list">
+              <div class="t-title">
+                <v-icon class="iconfont icon-shuxian" left />
+                <span>授课老师</span>
+              </div>
+              <div class="m-teachers_teacher-list_wrap">
+                <div class="m-teachers_teacher-item">
+                  <v-avatar size="56">
+                    <img src="https://cdn.vuetifyjs.com/images/john.jpg" />
+                  </v-avatar>
+                  <div class="cnt">
+                    <h3>赵春晖</h3>
+                    <p class="lector-title">教授</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="recommend-bottom f1">
             <div class="um-recommend">
@@ -235,6 +258,9 @@ export default {
 
   .m-information {
 
+    // 确保教师模块排列在右边
+    float: left;
+
     .m-information-tabs {
 
       .v-tab {
@@ -256,9 +282,13 @@ export default {
 
   .recommend-bottom {
     margin-top: 20px;
+    margin-bottom: 50px;
     padding-top: 20px;
+    //确保外边距生效
+    float: left;
 
     h3 {
+      // 确保可以排列在icon右边
       display: inline-block;
       vertical-align: middle;
     }
@@ -279,6 +309,44 @@ export default {
 
       .um-recommend-list_item_teacher {
         margin-top: 20px;
+      }
+    }
+  }
+
+  .m-sdinfo {
+    width: 295px;
+    margin-left: -295px;
+    background-color: white;
+    float: right;
+
+    .t-title {
+      margin: 30px 27px;
+      font-size: 18px;
+    }
+
+    .m-teachers_teacher-list_wrap {
+      padding: 0 35px;
+
+
+      .v-avatar {
+        float: left;
+      }
+
+      .cnt {
+        float: left;
+        margin: 10px 0 0 12px;
+
+        h3 {
+          font-size: 14px;
+          font-weight: 400;
+          color: rgb(51, 51, 51);
+        }
+
+        .lector-title {
+          font-size: 12px;
+          color: rgb(153, 153, 153);
+          font-weight: 400;
+        }
       }
     }
   }
