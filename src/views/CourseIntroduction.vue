@@ -7,11 +7,11 @@
       <div id="course-introduction">
         <div class="m-top">
           <div class="image-intro">
-            <v-img :aspect-ratio="16/9" :width="width" :src="image_src" />
+            <v-img :aspect-ratio="16/9" :width="width" :src="courseInfo.cover" />
           </div>
           <div class="course-enroll-info-wrapper">
             <div class="course-title-wrapper">
-              <span class="course-title">{{course_title}}</span>
+              <span class="course-title">{{courseInfo.title}}</span>
             </div>
             <div class="course-enroll">
               <v-btn rounded @click="participateCourse">
@@ -36,14 +36,14 @@
                     <span class="f-vam">课程描述</span>
                   </div>
                   <div class="category-content">
-                    <v-card-text style="font-size:13px;font-family:SimSun">{{text}}</v-card-text>
+                    <v-card-text style="font-size:13px;font-family:SimSun">{{courseInfo.desc}}</v-card-text>
                   </div>
                   <div class="category-title">
                     <v-icon class="iconfont icon-Open-Bookmark" left />
                     <span class="f-vam">课程大纲</span>
                   </div>
                   <div class="category-content">
-                    <v-treeview :items="items" open-all></v-treeview>
+                    <v-treeview :items="courseCatalogue" open-all></v-treeview>
                   </div>
                 </template>
               </v-tab-item>
@@ -53,7 +53,7 @@
                     <div class="comment-course-comment">
                       <div class="comment-course-comment_head">
                         <div class="comment-course-comment_head_rating-scores">
-                          <span>4.4</span>
+                          <span>{{commentScore}}</span>
                         </div>
                         <div class="comment-course-comment_head_rating-action">
                           <div class="comment-course-comment_head_rating-action_rate">
@@ -64,22 +64,22 @@
                                 readonly
                                 length="5"
                                 size="28"
-                                value="3"
+                                :value="commentTotalStar"
                             ></v-rating>
                           </div>
                           <div class="comment-course-comment_head_rating-action_tips">
-                            <span>共17条评价</span>
+                            <span>共{{commentCount}}条评价</span>
                           </div>
                         </div>
                       </div>
                       <div class="comment-course-comment_comment-list">
-                        <div class="comment-course-comment_comment-list_item">
+                        <div class="comment-course-comment_comment-list_item" v-for="item in courseComment" :key="item.id">
                           <v-avatar class="f-f2" size="56">
-                            <img src="https://cdn.vuetifyjs.com/images/john.jpg">
+                            <img :src="item.user.avatar">
                           </v-avatar>
-                          <div class="comment-course-comment_comment-list_item_body">
-                            <div class="comment-course-comment_comment-list_item_body_user-info f-f2">
-                              <span class="comment-course-comment_comment-list_item_body_user-info_name text-body-1">相约吃泡面</span>
+                          <div class="comment-course-comment_comment-list_item_body f-f2">
+                            <div class="comment-course-comment_comment-list_item_body_user-info">
+                              <span class="comment-course-comment_comment-list_item_body_user-info_name text-body-1">{{item.user.nick_name}}</span>
                               <span>
                                 <v-rating
                                     background-color="red lighten-2"
@@ -88,12 +88,12 @@
                                     readonly
                                     length="5"
                                     size="15"
-                                    value="3"
+                                    :value="item.total_star / 2"
                                 ></v-rating>
                               </span>
                             </div>
-                            <div class="comment-course-comment_comment-list_item_body_content f-f2">
-                              <span>{{comment_content}}</span>
+                            <div class="comment-course-comment_comment-list_item_body_content">
+                              <span>{{item.content}}</span>
                             </div>
                           </div>
                         </div>
@@ -113,11 +113,10 @@
               <div class="m-teachers_teacher-list_wrap">
                 <div class="m-teachers_teacher-item">
                   <v-avatar size="56">
-                    <img src="https://cdn.vuetifyjs.com/images/john.jpg" />
+                    <img :src="courseInfo.user.avatar" />
                   </v-avatar>
                   <div class="cnt">
-                    <h3>赵春晖</h3>
-                    <p class="lector-title">教授</p>
+                    <h3>{{courseInfo.user.nick_name}}</h3>
                   </div>
                 </div>
               </div>
@@ -131,7 +130,7 @@
               </div>
               <div class="um-recommend-list">
                 <div class="um-recommend-list_item" v-for="item in items" :key="item">
-                  <v-img class="um-recommend-list_item_img" :aspect-ratio="16/9" width="200px" :src="image_src" />
+                  <v-img class="um-recommend-list_item_img" :aspect-ratio="16/9" width="200px" :src="courseInfo.cover" />
                   <div class="um-recommend-list_item_name text-h6">数电不挂科-4小时学完数字电子技术基础/数字电路</div>
                   <div class="um-recommend-list_item_teacher text-caption grey--text">猴博士</div>
                 </div>
@@ -149,8 +148,6 @@ export default {
   name: "CourseIntroduction",
   data() {
     return {
-      image_src: 'https://nos.netease.com/edu-image/eeb7db8201f7472aa407b49c4f55ccb8.jpg?imageView&type=webp',
-      course_title: '大数据解析与应用导论',
       width: '510px',
       isAttend: false,
       information_tab: null,
@@ -158,7 +155,6 @@ export default {
           '课程详情',
           '课程评价'
       ],
-      text: '课程以一个Windows下的图形游戏程序入手，借助一个C语言图形库，展开全部的教学内容。\\r\\n\\r\\n作为计算机的基础语言，C语言有许多独特的地方。从1970年代诞生起，它的历史使命就是编写系统程序，它被设计成非常贴近底层、贴近硬件。它的很多独特的设计都是为了能够准确地反映硬件操作。但是历史又和C语言开了一个玩笑，它被当作了第一个通用型语言，曾经广泛地用于各种场合，解决各种问题。可是它之后的语言，再也没有像它那样贴近硬件，它们拿掉了那些硬件相关的东西，变得越来越远离底层了。\\r\\n\\r\\n这门课，就是要告诉你C语言到底有哪些独特的地方，为什么能长期占据15%上下的编程语言份额。它是在前序课程--《程序设计入门-C语言》或《程序设计入门-Java语言》的基础上，让你完全掌握C语言本身的课程。\\r\\n\\r\\n虽然我们会借助一个Windows下的图形库来展开教学内容，但是用C语言写Windows程序已经是过去式了，我们并不是要教大家如何用C语言来写Windows程序，只是借一下故事而已。',
       items: [
         {
           id: 1,
@@ -232,20 +228,81 @@ export default {
         },
       ],
       comment_content: '主要是为了来了解大数据预测血糖的技术hhh\n' +
-          '不愧是浙大的老师，颜值高讲的也很好，非常专业，美中不足就是涉及到很多机器学习和数理统计的知识，节奏比较快一带而过，算法的部分缺乏推导，不是很清晰。课程进度非常友好，三个月学完了这十章，非常认真的记了一个笔记本。期待以后还会有老师的课'
+          '不愧是浙大的老师，颜值高讲的也很好，非常专业，美中不足就是涉及到很多机器学习和数理统计的知识，节奏比较快一带而过，算法的部分缺乏推导，不是很清晰。课程进度非常友好，三个月学完了这十章，非常认真的记了一个笔记本。期待以后还会有老师的课',
+      courseInfo: {
+        title: '',
+        desc: '',
+        cover: '',
+        user: {
+          nick_name: '',
+          avatar: '',
+        }
+      },
+      courseCatalogue: [],
+      courseComment: [],
+      commentCount: 0,
+      commentTotalStar: 0,
+      commentScore: 0
     }
   },
+  created() {
+    this.getCourseInfo(this.$route.query.cid)
+    this.getCourseCatalogue(this.$route.query.cid)
+    this.getCourseComment(this.$route.query.cid)
+  },
   methods: {
+    pushCourse() {
+      this.$router.push('/course/learn')
+    },
     async participateCourse() {
       let uid = window.localStorage.getItem("uid")
       if (uid !== null) {
         return
       }
     },
-    pushCourse() {
-      this.$router.push('/course/learn')
+    async getCourseInfo(cid) {
+      const {data: res} = await this.$axios.post('course/getCourseBriefInfo',{'id':cid})
+      if (res.status === 200) {
+        this.courseInfo.title = res.data.title
+        this.courseInfo.desc = res.data.des
+        this.courseInfo.cover = res.data.cover
+        this.courseInfo.user.nick_name = res.data.user.nick_name
+        this.courseInfo.user.avatar = res.data.user.avatar
+      }
+    },
+    async getCourseCatalogue(cid) {
+      const {data: res} = await this.$axios.post('course/getCourseCatalogue?',{'id':cid})
+      if (res.status === 200) {
+        for (let i = 0; i < res.data.length; i++) {
+          let chapter = res.data[i]
+          let resultChapter = {}
+          resultChapter.id = chapter.id
+          resultChapter.name = chapter.title
+          resultChapter.children = []
+          for (let j = 0; j < chapter.videoList.length; j++) {
+            let section = chapter.videoList[j]
+            let resultSection = {}
+            resultSection.id = section.id
+            resultSection.name = section.title
+            resultSection.orderId = section.order_id
+            console.log(resultSection)
+            resultChapter.children.push(resultSection)
+          }
+          this.courseCatalogue.push(resultChapter)
+        }
+      }
+    },
+    async getCourseComment(cid) {
+      const reducer = (previous, current) => previous + current.total_star
+      const {data: res} = await this.$axios.post("course/getCourseEvaluation?",{'cid': cid})
+      if (res.status === 200) {
+        this.courseComment = res.data
+        this.commentCount = res.data.length
+        this.commentScore = (res.data.reduce(reducer, 0) / this.commentCount / 2).toFixed(1)
+        this.commentTotalStar = this.commentScore
+        }
+      }
     }
-  }
 }
 </script>
 
@@ -310,6 +367,8 @@ export default {
   }
 
   .m-information {
+    // 计算模型宽度，使其撑满，不随子元素宽度变化
+    width: calc(100% - 315px);
 
     // 确保教师模块排列在右边
     float: left;
@@ -362,35 +421,36 @@ export default {
 
         .comment-course-comment_comment-list_item {
           padding-top: 30px;
+          //确保每一条用户评论的高度不塌陷
+          overflow: hidden;
         }
 
         .f-f2 {
+          // 头像和内容均左浮动
           float: left;
         }
 
         .comment-course-comment_comment-list_item_body {
-          overflow: hidden;
           position: relative;
-          left: 1%;
+          left: 2%;
 
           .comment-course-comment_comment-list_item_body_user-info {
             margin-bottom: 9px;
 
             .comment-course-comment_comment-list_item_body_user-info_name{
               min-height: 31px;
+              margin-left: 9px;
+              font-size: 14px !important;
             }
           }
 
           .comment-course-comment_comment-list_item_body_content {
             color: rgb(102, 102, 102);
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 1.5px;
+            margin-left: 9px;
           }
         }
-
-
-
-
       }
     }
   }
@@ -431,6 +491,7 @@ export default {
   .m-sdinfo {
     width: 295px;
     margin-left: -295px;
+    padding-bottom: 30px;
     background-color: white;
     float: right;
 

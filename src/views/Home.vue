@@ -203,7 +203,6 @@
         }
       },
       async login() {
-        console.log(this.loginForm)
         const {data: res} = await this.$axios.post('user/login', this.loginForm)
         if (res.status === 200 && res.data !== {}) {
           this.userProfile = res.data

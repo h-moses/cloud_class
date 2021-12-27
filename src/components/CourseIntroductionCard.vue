@@ -3,7 +3,7 @@
     <v-img :src="course.cover" min-height="126" max-height="126"></v-img>
     <div class="mx-2 ">
       <div class="title" style="font-size: 14px !important;">{{course.title}}</div>
-      <div class="department" v-if="department !== null">{{course.user.nick_name}}</div>
+      <div class="department">{{course.user.nick_name}}</div>
     </div>
   </div>
 </template>
