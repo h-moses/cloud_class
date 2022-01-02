@@ -16,7 +16,7 @@
             <div class="course-enroll">
               <v-btn rounded @click="participateCourse">
                 <span v-if="isAttend" @click="participateCourse">立即参加</span>
-                <span v-else @click="pushCourse">已参加，进入学习</span>
+                <span v-else @click="pushLearning">已参加，进入学习</span>
               </v-btn>
             </div>
           </div>
@@ -129,7 +129,7 @@
                 <h3>为你推荐</h3>
               </div>
               <div class="um-recommend-list">
-                <div class="um-recommend-list_item" v-for="item in items" :key="item">
+                <div class="um-recommend-list_item" v-for="item in items" :key="item.id">
                   <v-img class="um-recommend-list_item_img" :aspect-ratio="16/9" width="200px" :src="courseInfo.cover" />
                   <div class="um-recommend-list_item_name text-h6">数电不挂科-4小时学完数字电子技术基础/数字电路</div>
                   <div class="um-recommend-list_item_teacher text-caption grey--text">猴博士</div>
@@ -227,8 +227,6 @@ export default {
           ],
         },
       ],
-      comment_content: '主要是为了来了解大数据预测血糖的技术hhh\n' +
-          '不愧是浙大的老师，颜值高讲的也很好，非常专业，美中不足就是涉及到很多机器学习和数理统计的知识，节奏比较快一带而过，算法的部分缺乏推导，不是很清晰。课程进度非常友好，三个月学完了这十章，非常认真的记了一个笔记本。期待以后还会有老师的课',
       courseInfo: {
         title: '',
         desc: '',
@@ -238,21 +236,23 @@ export default {
           avatar: '',
         }
       },
-      courseCatalogue: [],
       courseComment: [],
       commentCount: 0,
       commentTotalStar: 0,
-      commentScore: 0
+      commentScore: 0,
+      courseId: 0
     }
   },
   created() {
-    this.getCourseInfo(this.$route.query.cid)
-    this.getCourseCatalogue(this.$route.query.cid)
-    this.getCourseComment(this.$route.query.cid)
+    this.courseId = this.$route.query.cid
+    this.getCourseInfo(this.courseId)
+    // this.getCourseCatalogue(this.courseId)
+    this.getCourseComment(this.courseId)
+    this.$store.dispatch('getCatalogue',{'cid': this.courseId})
   },
   methods: {
-    pushCourse() {
-      this.$router.push('/course/learn')
+    pushLearning() {
+      this.$router.push({path: '/learn', query: {'cid': this.courseId}})
     },
     async participateCourse() {
       let uid = window.localStorage.getItem("uid")
@@ -270,28 +270,27 @@ export default {
         this.courseInfo.user.avatar = res.data.user.avatar
       }
     },
-    async getCourseCatalogue(cid) {
-      const {data: res} = await this.$axios.post('course/getCourseCatalogue?',{'id':cid})
-      if (res.status === 200) {
-        for (let i = 0; i < res.data.length; i++) {
-          let chapter = res.data[i]
-          let resultChapter = {}
-          resultChapter.id = chapter.id
-          resultChapter.name = chapter.title
-          resultChapter.children = []
-          for (let j = 0; j < chapter.videoList.length; j++) {
-            let section = chapter.videoList[j]
-            let resultSection = {}
-            resultSection.id = section.id
-            resultSection.name = section.title
-            resultSection.orderId = section.order_id
-            console.log(resultSection)
-            resultChapter.children.push(resultSection)
-          }
-          this.courseCatalogue.push(resultChapter)
-        }
-      }
-    },
+    // async getCourseCatalogue(cid) {
+    //   const {data: res} = await this.$axios.post('course/getCourseCatalogue?',{'id':cid})
+    //   if (res.status === 200) {
+    //     for (let i = 0; i < res.data.length; i++) {
+    //       let chapter = res.data[i]
+    //       let resultChapter = {}
+    //       resultChapter.id = chapter.id
+    //       resultChapter.name = chapter.title
+    //       resultChapter.children = []
+    //       for (let j = 0; j < chapter.videoList.length; j++) {
+    //         let section = chapter.videoList[j]
+    //         let resultSection = {}
+    //         resultSection.id = section.id
+    //         resultSection.name = section.title
+    //         resultSection.orderId = section.order_id
+    //         resultChapter.children.push(resultSection)
+    //       }
+    //       this.courseCatalogue.push(resultChapter)
+    //     }
+    //   }
+    // },
     async getCourseComment(cid) {
       const reducer = (previous, current) => previous + current.total_star
       const {data: res} = await this.$axios.post("course/getCourseEvaluation?",{'cid': cid})
@@ -302,7 +301,12 @@ export default {
         this.commentTotalStar = this.commentScore
         }
       }
+    },
+  computed: {
+    courseCatalogue: function () {
+      return this.$store.state.courseCatalogue
     }
+  }
 }
 </script>
 
@@ -311,6 +315,7 @@ export default {
   background-color: #F5F5F5;
   height: 100%;
 }
+
 .m-top {
   min-height: 398px;
   padding: 55px 200px;
@@ -364,6 +369,15 @@ export default {
     margin-right: 315px;
     padding: 0 41px 1px;
     background-color: white;
+  }
+
+  ::v-deep .v-treeview-node__children {
+
+    //子元素的字体大小
+    .v-treeview-node__label {
+      font-size: 16px;
+
+    }
   }
 
   .m-information {

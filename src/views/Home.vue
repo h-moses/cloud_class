@@ -182,7 +182,7 @@
         this.$router.push('/user')
       },
       pushIntroduction(id) {
-        this.$router.push({name: 'CourseIntroduction', query: {'cid': id}})
+        this.$router.push({path: `/introduction`,query: {'cid': id}})
       },
       async getBanner() {
         const {data:res} = await this.$axios.post("banner/getAll", {'type': 'stu_home'})

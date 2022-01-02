@@ -3,6 +3,10 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import CourseIntroduction from "../views/CourseIntroduction";
 import CourseLearning from "../views/CourseLearning";
+import AnnounceComponent from "../components/AnnounceComponent";
+import ContentComponent from "../components/ContentComponent";
+import VideoComponent from "../components/VideoComponent";
+import ForumIndexComponent from "../components/ForumIndexComponent";
 
 Vue.use(VueRouter)
 
@@ -12,27 +16,42 @@ const routes = [
     name: 'Home',
     component: Home
   },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
   {
-    path: '/course',
+    path: '/introduction',
     name: 'CourseIntroduction',
-    component: CourseIntroduction,
+    component: CourseIntroduction
+  },
+  {
+    path: '/learn',
+    component: CourseLearning,
     children: [
       {
-        path: '/learn',
+        path: '',
         name: 'CourseLearning',
-        component: CourseLearning
+        redirect: 'content'
+      },
+      {
+        path: 'announce',
+        name: 'AnnounceComponent',
+        component: AnnounceComponent
+      },
+      {
+        path: 'content',
+        name: 'ContentComponent',
+        component: ContentComponent
+      },
+      {
+        path: 'video',
+        name: 'VideoComponent',
+        component: VideoComponent
+      },
+      {
+        path: 'forumindex',
+        name: 'ForumIndexComponent',
+        component: ForumIndexComponent
       }
-
     ]
-  },
+  }
 ]
 
 const router = new VueRouter({
