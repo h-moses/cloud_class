@@ -5,13 +5,13 @@
         <span class="text-body-1 f-f1 f-fc3">课件</span>
       </router-link>
       <v-icon class="f-f1" left right>mdi-chevron-right</v-icon>
-      <v-select class="chapter-selector f-f1" dense></v-select>
+      <v-select class="chapter-selector f-f1" dense :items="chapterItems" v-model="selectedChapter"></v-select>
       <v-icon class="f-f1" left right>mdi-chevron-right</v-icon>
-      <v-select class="section-selector f-f1" dense></v-select>
+      <v-select class="section-selector f-f1" dense :items="this.$store.getters.sectionItems(this.selectedChapter)" v-model="selectedSection"></v-select>
     </div>
     <div class="player-container flex justify-center">
 <!--      vjs-big-play-centered可使大的播放按钮居住，vjs-fluid可使视频占满容器 -->
-      <video id="course-player" class="video-js vjs-big-play-centered vjs-fluid" ref="videoPlayer"></video>
+      <video id="video-player" class="video-js vjs-big-play-centered vjs-fluid" ref="videoPlayer"></video>
     </div>
   </div>
 </template>
@@ -24,11 +24,13 @@ export default {
     return {
       player: null,
       videoSrc: 'http://r46uv4d69.hn-bkt.clouddn.com/2004727%E2%80%94%E8%81%94%E7%B3%BB%E6%88%91%E4%BB%AC%E9%98%9F%E2%80%94%E3%80%90A14%E3%80%91%E7%A7%BB%E5%8A%A8%E4%BA%92%E8%81%94%E6%97%B6%E4%BB%A3%E7%9A%84%E8%AE%BE%E5%A4%87%E7%AE%A1%E7%90%86%E3%80%90%E8%99%B9%E8%BD%AF%E3%80%91%E2%80%94%E9%A1%B9%E7%9B%AE%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91.mp4',
+      selectedChapter: '',
+      selectedSection: '',
     }
   },
   created() {
-    console.log(this.$route.matched[0].path)
-    // this.videoSrc = this.$route.params.courseInfo.videoUrl
+    this.selectedChapter = this.$store.getters.selectedChapter(this.$route.query.sname)
+    this.selectedSection = this.$route.query.sname
   },
   mounted() {
     this.setupVideoPlayer()
@@ -101,6 +103,20 @@ export default {
         })
       })
     }
+  },
+  computed: {
+    chapterItems: function () {
+      return this.$store.getters.chapterItems
+    },
+    sectionItems: function (c_name) {
+      return this.$store.getters.sectionItems(c_name)
+    }
+  },
+  watch: {
+    // 当选择的章发生变化时，其中的节自动调整为该章的第一个视频
+    selectedChapter: function (newValue) {
+      this.selectedSection = this.$store.getters.sectionItems(newValue)[0]
+    }
   }
 }
 </script>
@@ -120,12 +136,14 @@ export default {
 .u-learn-moduletitle {
   overflow: hidden;
   padding: 10px 0;
-}
-.video-js .vjs-control-bar {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+  // 垂直居中
   display: flex;
+  align-items: center;
+
+  // 去除下拉框下方所占空间
+  ::v-deep .v-text-field__details {
+    display: none;
+  }
 }
 
 </style>

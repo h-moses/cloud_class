@@ -3,6 +3,18 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+function isParentChapter(catalogue, s_name) {
+    let result = null;
+    for (let i = 0; i < catalogue.length; i++) {
+        let item = catalogue[i]
+        let r = item.children.find(element => element.name === s_name)
+        if (r !== undefined) {
+            result = item
+        }
+    }
+    return result.name
+}
+
 const store = new Vuex.Store({
     state: {
         courseCatalogue: []
@@ -40,7 +52,15 @@ const store = new Vuex.Store({
         }
     },
     getters: {
-
+        chapterItems: state => {
+            return state.courseCatalogue.map(value => value.name)
+        },
+        sectionItems: (state) => (c_name) => {
+            return state.courseCatalogue.find(value => value.name === c_name).children.map(item => item.name)
+        },
+        selectedChapter: (state) => (s_name) => {
+            return isParentChapter(state.courseCatalogue,s_name)
+        }
     }
 })
 
