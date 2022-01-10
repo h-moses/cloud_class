@@ -20,6 +20,13 @@
       "unicode_decimal": 60371
     },
     {
+      "icon_id": "855537",
+      "name": "讲师信息",
+      "font_class": "jiangshixinxi",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    },
+    {
       "icon_id": "14197371",
       "name": "综合校情配置-01",
       "font_class": "zonghexiaoqingpeizhi-01",

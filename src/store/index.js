@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+// 查找该子章节的父章节
 function isParentChapter(catalogue, s_name) {
     let result = null;
     for (let i = 0; i < catalogue.length; i++) {
@@ -17,11 +18,18 @@ function isParentChapter(catalogue, s_name) {
 
 const store = new Vuex.Store({
     state: {
-        courseCatalogue: []
+        courseCatalogue: [],
+        userInfo: null,
+        isLogin: false,
+        lazySrc: 'http://edu-image.nosdn.127.net/6e66dbdc55464a44889c6a25428b2b4b.png?imageView&quality=100'
     },
     mutations: {
         updateCatalogue(state, payload) {
             state.courseCatalogue = payload
+        },
+        updateUserInfo(state, payload) {
+            state.userInfo = payload
+            state.isLogin = true
         }
     },
     actions: {
@@ -49,6 +57,14 @@ const store = new Vuex.Store({
                 }
             }
             commit('updateCatalogue',cataLogue)
+        },
+        async loginUser({commit}, payload) {
+            const {data: res} = await Vue.prototype.$axios.post('user/login',payload)
+            if (res.status === 200 && res.data !== {}) {
+                commit('updateUserInfo', res.data)
+            } else {
+                commit('updateUserInfo', null)
+            }
         }
     },
     getters: {
@@ -60,6 +76,27 @@ const store = new Vuex.Store({
         },
         selectedChapter: (state) => (s_name) => {
             return isParentChapter(state.courseCatalogue,s_name)
+        },
+        userName: state => {
+            if (state.userInfo === null) {
+                return '登录 | 注册'
+            } else {
+                return state.userInfo.nick_name === null ? '登录 | 注册' : state.userInfo.nick_name
+            }
+        },
+        uid: state => {
+            if (state.userInfo === null) {
+                return ''
+            } else {
+                return state.userInfo.uid
+            }
+        },
+        userAvatar: state => {
+            if (state.userInfo === null) {
+                return ''
+            } else {
+                return state.userInfo.avatar
+            }
         }
     }
 })

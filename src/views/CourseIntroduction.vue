@@ -1,8 +1,4 @@
 <template>
-  <v-app>
-    <v-app-bar app hide-on-scroll>
-
-    </v-app-bar>
     <v-main>
       <div id="course-introduction">
         <div class="m-top">
@@ -14,8 +10,8 @@
               <span class="course-title">{{courseInfo.title}}</span>
             </div>
             <div class="course-enroll">
-              <v-btn rounded @click="participateCourse">
-                <span v-if="isAttend" @click="participateCourse">立即参加</span>
+              <v-btn rounded>
+                <span v-if="!isInvolved" @click="participateCourse">立即参加</span>
                 <span v-else @click="pushLearning">已参加，进入学习</span>
               </v-btn>
             </div>
@@ -107,7 +103,7 @@
           <div class="m-sdinfo">
             <div class="m-teachers_teacher-list">
               <div class="t-title">
-                <v-icon class="iconfont icon-shuxian" left />
+                <v-icon class="iconfont icon-jiangshixinxi" left />
                 <span>授课老师</span>
               </div>
               <div class="m-teachers_teacher-list_wrap">
@@ -140,16 +136,18 @@
         </div>
       </div>
     </v-main>
-  </v-app>
 </template>
 
 <script>
+
+import {mapState, mapGetters} from 'vuex'
+
 export default {
   name: "CourseIntroduction",
   data() {
     return {
       width: '510px',
-      isAttend: false,
+      isInvolved: false,
       information_tab: null,
       information_tabs: [
           '课程详情',
@@ -244,24 +242,30 @@ export default {
     }
   },
   created() {
+    console.log(this.uid)
     this.courseId = this.$route.query.cid
     this.getCourseInfo(this.courseId)
-    // this.getCourseCatalogue(this.courseId)
     this.getCourseComment(this.courseId)
+    this.queryIsInvolved()
     this.$store.dispatch('getCatalogue',{'cid': this.courseId})
   },
   methods: {
     pushLearning() {
       this.$router.push({path: '/learn', query: {'cid': this.courseId}})
     },
-    async participateCourse() {
-      let uid = window.localStorage.getItem("uid")
-      if (uid !== null) {
-        return
+    async queryIsInvolved() {
+      const {data: res} = await this.$axios.post('course/getUserCourseRelation',{'uid': this.uid,'cid':this.courseId})
+      if (res.status === 200) {
+        this.isInvolved = res.data.flag
+      } else {
+        this.isInvolved = false
       }
     },
+    async participateCourse() {
+
+    },
     async getCourseInfo(cid) {
-      const {data: res} = await this.$axios.post('course/getCourseBriefInfo',{'id':cid})
+      const {data: res} = await this.$axios.post('course/getCourseBriefInfo', {'id': cid})
       if (res.status === 200) {
         this.courseInfo.title = res.data.title
         this.courseInfo.desc = res.data.des
@@ -270,41 +274,36 @@ export default {
         this.courseInfo.user.avatar = res.data.user.avatar
       }
     },
-    // async getCourseCatalogue(cid) {
-    //   const {data: res} = await this.$axios.post('course/getCourseCatalogue?',{'id':cid})
-    //   if (res.status === 200) {
-    //     for (let i = 0; i < res.data.length; i++) {
-    //       let chapter = res.data[i]
-    //       let resultChapter = {}
-    //       resultChapter.id = chapter.id
-    //       resultChapter.name = chapter.title
-    //       resultChapter.children = []
-    //       for (let j = 0; j < chapter.videoList.length; j++) {
-    //         let section = chapter.videoList[j]
-    //         let resultSection = {}
-    //         resultSection.id = section.id
-    //         resultSection.name = section.title
-    //         resultSection.orderId = section.order_id
-    //         resultChapter.children.push(resultSection)
-    //       }
-    //       this.courseCatalogue.push(resultChapter)
-    //     }
-    //   }
-    // },
     async getCourseComment(cid) {
       const reducer = (previous, current) => previous + current.total_star
-      const {data: res} = await this.$axios.post("course/getCourseEvaluation?",{'cid': cid})
+      const {data: res} = await this.$axios.post("course/getCourseEvaluation?", {'cid': cid})
       if (res.status === 200) {
         this.courseComment = res.data
         this.commentCount = res.data.length
-        this.commentScore = (res.data.reduce(reducer, 0) / this.commentCount / 2).toFixed(1)
-        this.commentTotalStar = this.commentScore
+        if (this.commentCount === 0) {
+          this.commentScore = '暂无评价'
+          this.commentTotalStar = 0
+        } else {
+          this.commentScore = (res.data.reduce(reducer, 0) / this.commentCount / 2).toFixed(1)
+          this.commentTotalStar = this.commentScore
         }
       }
-    },
+    }
+  },
   computed: {
-    courseCatalogue: function () {
-      return this.$store.state.courseCatalogue
+    ...mapState([
+        "courseCatalogue"
+    ]),
+    ...mapGetters([
+        "uid"
+    ])
+  },
+  watch: {
+    uid: {
+      deep: true,
+      handler() {
+        this.queryIsInvolved()
+      }
     }
   }
 }
@@ -349,11 +348,14 @@ export default {
 
     .v-btn {
       background-color: #00CC7E;
-      color: white;
       min-width: 192px;
       height: 48px;
       font-weight: bold;
       font-size: 1rem;
+
+      span {
+        color: white;
+      }
     }
   }
 }

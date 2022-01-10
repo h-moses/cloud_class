@@ -1,10 +1,12 @@
 <template>
   <div id="course-introduction-card">
-    <v-img :src="course.cover" min-height="126" max-height="126"></v-img>
-    <div class="mx-2 ">
-      <div class="title" style="font-size: 14px !important;">{{course.title}}</div>
-      <div class="department">{{course.user.nick_name}}</div>
-    </div>
+    <v-card class="pb-4" :width="width" :height="height" :to="{path: `/introduction`,query: {'cid': course.cid }}" hover ripple>
+      <v-img :src="course.cover" min-height="126" max-height="126"></v-img>
+      <div class="mx-2 ">
+        <div class="title" style="font-size: 14px !important;">{{course.title}}</div>
+        <div class="instructor pt-1">{{course.user.nick_name}}</div>
+      </div>
+    </v-card>
   </div>
 </template>
 
@@ -15,15 +17,20 @@ export default {
     course: {
       type: Object,
       required: true
-    }
-  },
-  data() {
-    return {
-
+    },
+    width: {
+      type: String,
+      required: false
+    },
+    height: {
+      type: String,
+      required: false
     }
   },
   methods: {
-
+    pushIntroduction(id) {
+      this.$router.push({path: `/introduction`,query: {'cid': id}})
+    },
   }
 }
 </script>
@@ -34,13 +41,21 @@ export default {
   font-size: $size;
 }
 
+#course-introduction-card {
+  padding-bottom: 16px;
+}
+
 .title {
   color: #333;
   font-weight: bold !important;
+  // 单行文字省略
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-family: PingFangSC-Medium, PingFangSC !important;
 }
 
-.department {
-  @include font-style(#666,12px);
+.instructor {
+  @include font-style(#999999,12px);
 }
 </style>

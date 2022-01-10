@@ -1,12 +1,13 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Home from '../views/Home.vue';
 import CourseIntroduction from "../views/CourseIntroduction";
 import CourseLearning from "../views/CourseLearning";
 import AnnounceComponent from "../components/AnnounceComponent";
 import ContentComponent from "../components/ContentComponent";
 import VideoComponent from "../components/VideoComponent";
-import ForumIndexComponent from "../components/ForumIndexComponent";
+import ExamComponent from "../components/ExamComponent";
+import UserInfoView from "../views/UserInfo";
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,11 @@ const routes = [
     path: '/introduction',
     name: 'CourseIntroduction',
     component: CourseIntroduction
+  },
+  {
+    path: '/user',
+    name: 'UserInfoView',
+    component: UserInfoView
   },
   {
     path: '/learn',
@@ -46,9 +52,9 @@ const routes = [
         component: VideoComponent
       },
       {
-        path: 'forumindex',
-        name: 'ForumIndexComponent',
-        component: ForumIndexComponent
+        path: 'exam',
+        name: 'ExamComponent',
+        component: ExamComponent
       }
     ]
   }

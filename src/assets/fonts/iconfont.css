@@ -2,9 +2,9 @@
   font-family: "iconfont"; /* Project id 3023760 */
   /* Color fonts */
   src: 
-       url('iconfont.woff2?t=1640368224465') format('woff2'),
-       url('iconfont.woff?t=1640368224465') format('woff'),
-       url('iconfont.ttf?t=1640368224465') format('truetype');
+       url('iconfont.woff2?t=1641835369303') format('woff2'),
+       url('iconfont.woff?t=1641835369303') format('woff'),
+       url('iconfont.ttf?t=1641835369303') format('truetype');
 }
 
 .iconfont {
@@ -21,6 +21,10 @@
 
 .icon-Open-Bookmark:before {
   content: "\ebd3";
+}
+
+.icon-jiangshixinxi:before {
+  content: "\e680";
 }
 
 .icon-zonghexiaoqingpeizhi-01:before {

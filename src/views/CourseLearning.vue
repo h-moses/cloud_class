@@ -1,8 +1,4 @@
 <template>
-  <v-app>
-    <v-app-bar app hide-on-scroll>
-
-    </v-app-bar>
     <v-main id="learn-container">
       <div class="learnPage-wrapper">
         <div class="g-sd1">
@@ -47,7 +43,6 @@
         </div>
       </div>
     </v-main>
-  </v-app>
 </template>
 
 <script>
@@ -58,7 +53,7 @@ export default {
       items: [
         {title: '公告', path:'/learn/announce'},
         {title: '课件', path: '/learn/content'},
-        {title: '讨论区', path: '/learn/forumindex'}
+        {title: '测验', path: '/learn/exam'}
       ],
       courseInfo: {
         id: null,
