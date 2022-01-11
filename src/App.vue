@@ -2,15 +2,18 @@
   <v-app>
 <!--    应用栏-->
     <v-app-bar app elevation="1" style="background-color: white">
-      <v-img
-          id="mooc-logo"
-          alt="Mooc Logo"
-          class="d-inline-block shrink mr-2"
-          contain
-          src="https://edu-image.nosdn.127.net/3310f128e53b406f94400f7ae6046db2.png?imageView&quality=100"
-          transition="scale-transition"
-          width="40"/>
+      <router-link :to="{path: '/'}">
+        <v-img
+            id="mooc-logo"
+            alt="Mooc Logo"
+            class="d-inline-block shrink mr-2"
+            contain
+            src="https://edu-image.nosdn.127.net/3310f128e53b406f94400f7ae6046db2.png?imageView&quality=100"
+            transition="scale-transition"
+            width="40"/>
+      </router-link>
       <div>
+        <v-btn text plain left @click="enterCommunity">社区云</v-btn>
         <v-btn text plain v-show="!isLogin" @click="openDialog">登录 | 注册</v-btn>
         <v-btn text plain left v-show="isLogin" @click="enterCenter">个人中心</v-btn>
         <v-avatar size="32" v-show="isLogin">
@@ -50,6 +53,9 @@ export default {
       if (!this.isLogin) {
         this.overlay = true
       }
+    },
+    enterCommunity() {
+      this.$router.push({path: '/community'})
     },
     enterCenter() {
       this.$router.push({path: '/user', query: {'uid': this.uid}})

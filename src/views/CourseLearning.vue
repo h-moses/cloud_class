@@ -99,7 +99,6 @@ export default {
   data() {
     return {
       items: [
-        {title: '公告', content: 'announce'},
         {title: '课件', content: 'content'},
         {title: '测验', content: 'testlist'}
       ],

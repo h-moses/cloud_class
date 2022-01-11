@@ -3,12 +3,12 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import CourseIntroduction from "../views/CourseIntroduction";
 import CourseLearning from "../views/CourseLearning";
-import AnnounceComponent from "../components/AnnounceComponent";
 import ContentComponent from "../components/ContentComponent";
 import VideoComponent from "../components/VideoComponent";
 import ExamComponent from "../components/ExamComponent";
 import UserInfoView from "../views/UserInfo";
 import QuizComponent from "../components/QuizComponent";
+import CommunicationCommunity from "../views/CommunicationCommunity";
 
 Vue.use(VueRouter)
 
@@ -29,18 +29,18 @@ const routes = [
     component: UserInfoView
   },
   {
+    path: '/community',
+    name: 'CommunicationCommunity',
+    component: CommunicationCommunity
+  },
+  {
     path: '/learn',
     component: CourseLearning,
     children: [
       {
         path: '',
         name: 'CourseLearning',
-        redirect: 'announce'
-      },
-      {
-        path: 'announce',
-        name: 'AnnounceComponent',
-        component: AnnounceComponent
+        redirect: 'content'
       },
       {
         path: 'content',
