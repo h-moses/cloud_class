@@ -10,9 +10,9 @@
               <span class="course-title">{{courseInfo.title}}</span>
             </div>
             <div class="course-enroll">
-              <v-btn rounded>
-                <span v-if="!isInvolved" @click="participateCourse">立即参加</span>
-                <span v-else @click="pushLearning">已参加，进入学习</span>
+              <v-btn rounded @click="enterOrInvolve">
+                <span v-if="!isInvolved">立即参加</span>
+                <span v-else>已参加，进入学习</span>
               </v-btn>
             </div>
           </div>
@@ -242,7 +242,6 @@ export default {
     }
   },
   created() {
-    console.log(this.uid)
     this.courseId = this.$route.query.cid
     this.getCourseInfo(this.courseId)
     this.getCourseComment(this.courseId)
@@ -251,7 +250,7 @@ export default {
   },
   methods: {
     pushLearning() {
-      this.$router.push({path: '/learn', query: {'cid': this.courseId}})
+      this.$router.push({path: '/learn', query: {'cid': String(this.courseId)}})
     },
     async queryIsInvolved() {
       const {data: res} = await this.$axios.post('course/getUserCourseRelation',{'uid': this.uid,'cid':this.courseId})
@@ -263,6 +262,13 @@ export default {
     },
     async participateCourse() {
 
+    },
+    enterOrInvolve() {
+      if (this.isInvolved) {
+        this.pushLearning()
+      } else {
+        this.participateCourse()
+      }
     },
     async getCourseInfo(cid) {
       const {data: res} = await this.$axios.post('course/getCourseBriefInfo', {'id': cid})

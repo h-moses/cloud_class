@@ -23,9 +23,9 @@
                   <v-divider></v-divider>
 
                   <v-list dense nav >
-                    <v-list-item class="u-greentab j-tabitem" v-for="item in items" :key="item.title" :to="item.path" color="#FFF" active-class="u-curtab" link>
+                    <v-list-item class="u-greentab j-tabitem" v-for="item in items" :key="item.title" :to="jumpChild(item.content)" color="#FFF" active-class="u-curtab" link>
                       <v-list-item-content>
-                        <v-list-item-title>{{ item.title}}</v-list-item-title>
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                   </v-list>
@@ -42,6 +42,9 @@
           </div>
         </div>
       </div>
+      <v-dialog v-model="comment_dialog" persistent>
+
+      </v-dialog>
     </v-main>
 </template>
 
@@ -51,9 +54,9 @@ export default {
   data() {
     return {
       items: [
-        {title: '公告', path:'/learn/announce'},
-        {title: '课件', path: '/learn/content'},
-        {title: '测验', path: '/learn/exam'}
+        {title: '公告', content: 'announce'},
+        {title: '课件', content: 'content'},
+        {title: '测验', content: 'testlist'}
       ],
       courseInfo: {
         id: null,
@@ -62,7 +65,8 @@ export default {
         instructor: null
       },
       courseId: 0,
-      selectedItem: 1
+      selectedItem: 1,
+      comment_dialog: true
     }
   },
   created() {
@@ -78,6 +82,9 @@ export default {
         this.courseInfo.cover = res.data.cover
         this.courseInfo.instructor= res.data.user.nick_name
       }
+    },
+    jumpChild(path) {
+      return {path: `${path}`, query: {'cid': this.courseId}}
     }
   }
 }

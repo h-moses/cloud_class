@@ -8,6 +8,7 @@ import ContentComponent from "../components/ContentComponent";
 import VideoComponent from "../components/VideoComponent";
 import ExamComponent from "../components/ExamComponent";
 import UserInfoView from "../views/UserInfo";
+import QuizComponent from "../components/QuizComponent";
 
 Vue.use(VueRouter)
 
@@ -34,7 +35,7 @@ const routes = [
       {
         path: '',
         name: 'CourseLearning',
-        redirect: 'content'
+        redirect: 'announce'
       },
       {
         path: 'announce',
@@ -52,9 +53,14 @@ const routes = [
         component: VideoComponent
       },
       {
-        path: 'exam',
+        path: 'testlist',
         name: 'ExamComponent',
         component: ExamComponent
+      },
+      {
+        path: 'quiz',
+        name: 'QuizComponent',
+        component: QuizComponent
       }
     ]
   }
