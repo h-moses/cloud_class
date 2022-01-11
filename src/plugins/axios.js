@@ -13,9 +13,7 @@ let config = {
   baseURL: "http://101.133.173.40:8090/edusys/",
   // timeout: 60 * 1000, // Timeout
   // withCredentials: true, // Check cross-site Access-Control
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+
 };
 
 const _axios = axios.create(config);
@@ -23,6 +21,10 @@ const _axios = axios.create(config);
 _axios.interceptors.request.use(
   function(config) {
     // Do something before request is sent
+    if (config.type && config.type === 'json') {
+      return config
+    }
+    config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     config.data = qs.stringify(config.data)
     return config;
   },

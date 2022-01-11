@@ -43,12 +43,57 @@
         </div>
       </div>
       <v-dialog v-model="comment_dialog" persistent>
-
+        <v-card width="700" height="400">
+          <v-card-title class="text-h5">课程评价</v-card-title>
+          <v-divider />
+          <div class="text-subtitle-2 font-weight-medium d-flex justify-center mt-4">学了这么久，不如来评价一下这个课程吧~~</div>
+          <v-rating
+              class="comment-rating my-4 text-center"
+              v-model="mark"
+              background-color="warning lighten-1"
+              color="warning"
+              hover
+              length="5"
+              size="32"
+          ></v-rating>
+          <v-card-text>
+            <div class="course-comment">
+              <v-textarea
+                  rows="3"
+                  row-height="50"
+                  outlined
+                  name="input-7-4"
+                  label="评价内容"
+                  placeholder="快来评价一下吧"
+                  v-model="comment_content"
+              ></v-textarea>
+            </div>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="primary" width="100" @click="submitComment">提交</v-btn>
+            <v-btn color="orange" width="100" @click="comment_dialog = false">暂不评价</v-btn>
+          </v-card-actions>
+        </v-card>
       </v-dialog>
+      <v-snackbar
+          :timeout="3"
+          :value="snack_bar"
+          absolute
+          bottom
+          color="success"
+          outlined
+          right
+      >
+        {{snack_notice}}
+      </v-snackbar>
     </v-main>
 </template>
 
 <script>
+
+import {mapGetters} from 'vuex'
+
 export default {
   name: "CourseLearning",
   data() {
@@ -66,7 +111,11 @@ export default {
       },
       courseId: 0,
       selectedItem: 1,
-      comment_dialog: true
+      comment_dialog: true,
+      mark: 0,
+      comment_content: "",
+      snack_bar: false,
+      snack_notice: ''
     }
   },
   created() {
@@ -85,7 +134,26 @@ export default {
     },
     jumpChild(path) {
       return {path: `${path}`, query: {'cid': this.courseId}}
+    },
+    async submitComment() {
+      this.mark *= 2
+      console.log(this.comment_content)
+      const {data: res} = await this.$axios.post('course/addCourseEvaluation',{'user_id': this.uid,'course_id':this.courseId,'total_star':this.mark,'content':this.comment_content},{
+        'type':'json'
+      })
+      if (res.status === 500) {
+        this.snack_notice = res.msg
+      } else {
+        this.snack_notice = '评价成功'
+      }
+      this.snack_bar = true
+      this.comment_dialog = false
     }
+  },
+  computed: {
+    ...mapGetters([
+        "uid"
+    ])
   }
 }
 </script>
@@ -148,4 +216,14 @@ export default {
     }
   }
 }
+
+// 评论对话框按钮的文字颜色
+::v-deep .v-btn__content {
+  color: white;
+
+  &:hover {
+    color: white !important;
+  }
+}
+
 </style>
