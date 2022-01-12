@@ -9,6 +9,7 @@ import ExamComponent from "../components/ExamComponent";
 import UserInfoView from "../views/UserInfo";
 import QuizComponent from "../components/QuizComponent";
 import CommunicationCommunity from "../views/CommunicationCommunity";
+import CourseSearch from "../views/CourseSearch";
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,11 @@ const routes = [
     path: '/community',
     name: 'CommunicationCommunity',
     component: CommunicationCommunity
+  },
+  {
+    path: '/search',
+    name: CourseSearch,
+    component: CourseSearch
   },
   {
     path: '/learn',

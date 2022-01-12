@@ -79,7 +79,7 @@ const store = new Vuex.Store({
         },
         userName: state => {
             if (state.userInfo === null) {
-                return '登录 | 注册'
+                return '登录'
             } else {
                 return state.userInfo.nick_name === null ? '登录 | 注册' : state.userInfo.nick_name
             }

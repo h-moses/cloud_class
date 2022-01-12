@@ -12,9 +12,10 @@
             transition="scale-transition"
             width="40"/>
       </router-link>
-      <div>
+      <div class="d-flex align-center">
+        <v-text-field class="course-search" background-color="#eee" placeholder="搜索感兴趣的课程" rounded append-icon="mdi-magnify" v-model="key" @click:append="searchCourse" />
         <v-btn text plain left @click="enterCommunity">社区云</v-btn>
-        <v-btn text plain v-show="!isLogin" @click="openDialog">登录 | 注册</v-btn>
+        <v-btn text plain v-show="!isLogin" @click="openDialog">登录</v-btn>
         <v-btn text plain left v-show="isLogin" @click="enterCenter">个人中心</v-btn>
         <v-avatar size="32" v-show="isLogin">
           <v-img :src="this.userAvatar" />
@@ -46,6 +47,7 @@ export default {
   data() {
     return {
       overlay: false,
+      key: ""
     }
   },
   methods: {
@@ -59,6 +61,10 @@ export default {
     },
     enterCenter() {
       this.$router.push({path: '/user', query: {'uid': this.uid}})
+    },
+    searchCourse() {
+      this.$router.push({path: '/search', query: {'key': this.key}})
+      this.key = ""
     }
   },
   computed: {
@@ -97,4 +103,20 @@ html,body {
     color: #00c758;
   }
 }
+
+.course-search {
+  float: left;
+}
+
+.course-search {
+  margin-top: 8px !important;
+}
+
+::v-deep .v-text-field__details {
+  display: none;
+}
+
+//::v-deep .v-input__slot {
+//  margin-bottom: 0;
+//}
 </style>
