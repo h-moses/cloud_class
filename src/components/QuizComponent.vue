@@ -2,21 +2,29 @@
   <div id="quiz-container">
     <div class="u-learn-moduletitle">
       <div class="text-h6 f-fl">第{{this.qid}}周测验</div>
+<!--      返回按钮-->
       <router-link class="f-fr" style="font-size: 12px;color: #00CC7E;" :to="{path: 'testlist', query:{'cid': this.cid}}">返回</router-link>
     </div>
+<!--    题目列表-->
     <div class="question-list">
+<!--      单个题目-->
       <div class="question-item" v-for="item in questionList" :key="item.id">
+<!--        题面-->
         <div class="question_title">
+<!--          编号-->
           <div class="question_position f-fl">{{item.id}}</div>
           <div class="question-desc f-fl">
             <div class="type-score f-fl">
+<!--              类型-->
               <span class="dan" v-if="item.type === 'single'">单选</span>
               <span v-else class="dan">判断</span>
+<!--              分数-->
               ({{item.score}}分)
             </div>
             <div class="f-fl">{{item.name}}</div>
           </div>
         </div>
+<!--        选项集-->
         <div class="option-group">
           <v-radio-group v-model="selectedOption[item.id]" column >
             <v-radio v-for="(option,i) in item.options" :key="i" :label="option" :value="i">
@@ -25,16 +33,17 @@
         </div>
       </div>
     </div>
+<!--    得分结果，默认不显示-->
     <div class="submit-result" v-show="result">本次得分为：{{this.score.toFixed(2)}}/{{this.totalScore.toFixed(2)}}，如果你认为本次测试成绩不理想，你可以选择再做一次。</div>
+<!--    提交按钮-->
     <v-btn class="mt-10" color="#00CC7E" @click="dialog = true">提交答案</v-btn>
+<!--    提交对话框，默认不显示-->
     <v-dialog v-model="dialog" persistent>
       <v-card width="300">
         <div class="d-flex flex-no-wrap justify-space-between align-center">
           <v-icon right left size="60" color="blue">mdi-alert-circle</v-icon>
           <div>
-
             <v-card-subtitle >提交后本次测验尝试的答案将不可修改，确定要提交？</v-card-subtitle>
-
             <v-card-actions class="d-flex align-center pa-4">
               <v-btn class="ml-10" color="blue" @click="submitAnswer">
                 确认
@@ -56,12 +65,19 @@ export default {
   data() {
     return {
       cid: Number.MAX_VALUE,
+      //
       qid: Number.MAX_VALUE,
+      // 得分
       score: 0,
+      // 总分
       totalScore: 0,
+      // 是否显示提交对话框
       dialog: false,
+      // 是否显示结果
       result: false,
+      // 每道题选中的索引
       selectedOption: [],
+      // 题目列表
       questionList: []
     }
   },
@@ -71,18 +87,30 @@ export default {
     this.getQuestionList()
   },
   methods: {
+
+    /*
+    * 获取测验题目
+    * */
     async getQuestionList() {
       const {data: res} = await this.$axios.post('course/getCourseTest',{'id': this.cid})
       if (res.status === 200 && res.data !== null) {
+        // 题目列表
         let data = res.data[this.qid-1].testList[0]
+        // 遍历每一个题目，获取所需信息
         data.singleQuestions.forEach(element => {
           let question = {}
           question.id = element.id
+          // 题目类型
           question.type = element.question_type
+          // 计算总分
           this.totalScore += parseFloat(element.score)
+          // 该题分数
           question.score = element.score
+          // 问题
           question.name = element.questionSingle.question
+          // 答案
           question.answer = this.convertAnswer(element.questionSingle.answer)
+          // 选项
           let options = []
           options.push(element.questionSingle.optionA,element.questionSingle.optionB,element.questionSingle.optionC,element.questionSingle.optionD)
           question.options = options
@@ -102,6 +130,9 @@ export default {
         })
       }
     },
+    /*
+    * 为方便答案比对，将答案转换为对应索引
+    * */
     convertAnswer(answer) {
       switch (answer) {
         case 'A':
@@ -118,6 +149,9 @@ export default {
           return 1
       }
     },
+    /*
+    * 提交答案，计算得分
+    * */
     submitAnswer() {
       for (let i = 1; i < this.selectedOption.length; i++) {
         if (this.selectedOption[i] === this.questionList[i-1].answer) {
@@ -126,7 +160,6 @@ export default {
       }
       this.dialog = false
       this.result = true
-
     }
   }
 }

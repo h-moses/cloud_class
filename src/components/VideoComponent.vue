@@ -5,8 +5,10 @@
         <span class="text-body-1 f-f1 f-fc3">课件</span>
       </router-link>
       <v-icon class="f-f1" left right>mdi-chevron-right</v-icon>
+<!--      一级章节下拉框-->
       <v-select class="chapter-selector f-f1" dense :items="chapterItems" v-model="selectedChapter"></v-select>
       <v-icon class="f-f1" left right>mdi-chevron-right</v-icon>
+<!--      二级章节下拉框-->
       <v-select class="section-selector f-f1" dense :items="this.$store.getters.sectionItems(this.selectedChapter)" v-model="selectedSection"></v-select>
     </div>
     <div class="player-container flex justify-center">
@@ -41,6 +43,9 @@ export default {
     }
   },
   methods: {
+    /*
+    * 设置视频播放器
+    * */
     setupVideoPlayer() {
       let options = {
         controls: true, // 是否显示底部控制栏
@@ -94,13 +99,7 @@ export default {
       this.player = this.$video(this.$refs.videoPlayer,options)
       // 必须为箭头函数，否则无法调用videojs
       this.player.ready(() => {
-        this.$video.log('Your player is ready')
-
         this.player.play()
-
-        this.player.on('ended',function () {
-          this.$video.log('Awww... over so soon ?!')
-        })
       })
     }
   },

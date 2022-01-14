@@ -72,22 +72,27 @@
       this.getAllCategories()
     },
     methods: {
-      pushDetail() {
-        this.$router.push({path: '/user', query: {'uid': this.uid}})
-      },
-
+      /*
+      * 获取轮播图资源
+      * */
       async getBanner() {
         const {data:res} = await this.$axios.post("banner/getAll", {'type': 'stu_home'})
         if (res.status === 200 && res.data !== []) {
           this.banners = res.data
         }
       },
+      /*
+      * 获取所有课程
+      * */
       async getAllCourse() {
         const {data:res} = await this.$axios.get('course/getAllCourseSortByCategory')
         if (res.status === 200 && res.data !== []) {
           this.allCourse = res.data
         }
       },
+      /*
+      * 获取所有课程类别
+      * */
       async getAllCategories() {
         const {data: res} = await this.$axios.get('course_category/getTreeList')
         if (res.status === 200 && res.data !== []) {

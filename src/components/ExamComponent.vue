@@ -4,6 +4,7 @@
       <div class="text-h6">测验</div>
     </div>
     <div>
+<!--      测验卡片-->
       <div class="u-chapterQuizItem" v-for="item in baseInfo" :key="item.id">
         <div class="u-titleName">第{{item.id}}周 {{item.title}}</div>
         <div class="u-quizList">
@@ -58,18 +59,24 @@ export default {
     this.getQuizBaseInfo()
   },
   methods: {
+
+    /*
+    * 获取并解析测验信息
+    * */
     async getQuizBaseInfo() {
       const {data: res} = await this.$axios.post('course/getCourseTest',{'id': this.courseId})
       if (res.status === 200 && res.data !== null) {
         let data = res.data
         for (let i = 0; i < data.length; i++) {
           let info = {}
+          // 存在测验
           if (data[i].testList.length !== 0) {
             info.id = data[i].order_id
             info.title = data[i].title
             info.deadline = '2022/02/27 23:00'
             let totalScore = 0
             let test = data[i].testList[0]
+            // 计算测验总分
             test.singleQuestions.forEach(element => totalScore += element.score)
             test.judgeQuestions.forEach(element => totalScore += element.score)
             // 保证两位小数

@@ -1,6 +1,8 @@
 <template>
   <div id="course-introduction-card">
+<!--    卡片-->
     <v-card class="pb-4" :width="width" :height="height" :to="{path: `/introduction`,query: {'cid': course.cid }}" hover ripple>
+<!--      课程封面-->
       <v-img :src="course.cover" min-height="126" max-height="126"></v-img>
       <div class="mx-2 ">
         <div class="title" style="font-size: 14px !important;">{{course.title}}</div>
@@ -27,11 +29,6 @@ export default {
       required: false
     }
   },
-  methods: {
-    pushIntroduction(id) {
-      this.$router.push({path: `/introduction`,query: {'cid': id}})
-    },
-  }
 }
 </script>
 

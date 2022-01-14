@@ -9,7 +9,9 @@
             <div class="course-title-wrapper">
               <span class="course-title">{{courseInfo.title}}</span>
             </div>
+<!--            加入学习按钮-->
             <div class="course-enroll">
+<!--              根据状态进行不同处理-->
               <v-btn rounded @click="enterOrInvolve">
                 <span v-if="!isInvolved">立即参加</span>
                 <span v-else>已参加，进入学习</span>
@@ -20,11 +22,14 @@
         <div class="horizontal-divider-20" />
         <div class="m-main">
           <div class="m-information f1">
+<!--            标签头-->
             <v-tabs class="m-information-tabs" v-model="information_tab" fixed-tabs color="success">
               <v-tabs-slider color="#00c758"></v-tabs-slider>
               <v-tab v-for="item in information_tabs" :key="item">{{item}}</v-tab>
             </v-tabs>
+<!--            标签页-->
             <v-tabs-items v-model="information_tab">
+<!--              课程介绍页面-->
               <v-tab-item>
                 <template #default>
                   <div class="category-title">
@@ -43,16 +48,19 @@
                   </div>
                 </template>
               </v-tab-item>
+<!--              评价模块-->
               <v-tab-item>
                 <template #default>
                   <div class="comment-section">
                     <div class="comment-course-comment">
                       <div class="comment-course-comment_head">
+<!--                        总评价分数-->
                         <div class="comment-course-comment_head_rating-scores">
                           <span>{{commentScore}}</span>
                         </div>
                         <div class="comment-course-comment_head_rating-action">
                           <div class="comment-course-comment_head_rating-action_rate">
+<!--                            总评价星级-->
                             <v-rating
                                 background-color="red lighten-2"
                                 color="red"
@@ -63,20 +71,25 @@
                                 :value="commentTotalStar"
                             ></v-rating>
                           </div>
+<!--                          评价条数-->
                           <div class="comment-course-comment_head_rating-action_tips">
                             <span>共{{commentCount}}条评价</span>
                           </div>
                         </div>
                       </div>
                       <div class="comment-course-comment_comment-list">
+<!--                        每一个评价-->
                         <div class="comment-course-comment_comment-list_item" v-for="item in courseComment" :key="item.id">
+<!--                          用户头像-->
                           <v-avatar class="f-f2" size="56">
                             <img :src="item.user.avatar">
                           </v-avatar>
                           <div class="comment-course-comment_comment-list_item_body f-f2">
                             <div class="comment-course-comment_comment-list_item_body_user-info">
+<!--                              用户昵称-->
                               <span class="comment-course-comment_comment-list_item_body_user-info_name text-body-1">{{item.user.nick_name}}</span>
                               <span>
+<!--                                评级星级-->
                                 <v-rating
                                     background-color="red lighten-2"
                                     color="red"
@@ -88,6 +101,7 @@
                                 ></v-rating>
                               </span>
                             </div>
+<!--                            评级内容-->
                             <div class="comment-course-comment_comment-list_item_body_content">
                               <span>{{item.content}}</span>
                             </div>
@@ -108,9 +122,11 @@
               </div>
               <div class="m-teachers_teacher-list_wrap">
                 <div class="m-teachers_teacher-item">
+<!--                  老师头像-->
                   <v-avatar size="56">
                     <img :src="courseInfo.user.avatar" />
                   </v-avatar>
+<!--                  老师昵称-->
                   <div class="cnt">
                     <h3>{{courseInfo.user.nick_name}}</h3>
                   </div>
@@ -135,6 +151,15 @@
           </div>
         </div>
       </div>
+      <v-snackbar
+          v-model="snack_bar"
+          absolute
+          bottom
+          color="success"
+          outlined
+      >
+        {{snack_notice}}
+      </v-snackbar>
     </v-main>
 </template>
 
@@ -147,84 +172,18 @@ export default {
   data() {
     return {
       width: '510px',
+      // 是否已参加该课程
       isInvolved: false,
+      // 显示的标签页
       information_tab: null,
+      // 标签选项
       information_tabs: [
           '课程详情',
           '课程评价'
       ],
-      items: [
-        {
-          id: 1,
-          name: 'Applications :',
-          children: [
-            { id: 1, name: 'Calendar : app' },
-            { id: 2, name: 'Chrome : app' },
-            { id: 3, name: 'Webstorm : app' },
-          ],
-        },
-        {
-          id: 2,
-          name: 'Documents :',
-          children: [
-            {
-              id: 6,
-              name: 'vuetify :',
-              children: [
-                {
-                  id: 7,
-                  name: 'src :',
-                  children: [
-                    { id: 10, name: 'index : ts' },
-                    { id: 9, name: 'bootstrap : ts' },
-                  ],
-                },
-              ],
-            },
-            {
-              id: 3,
-              name: 'material2 :',
-              children: [
-                {
-                  id: 11,
-                  name: 'src :',
-                  children: [
-                    { id: 12, name: 'v-btn : ts' },
-                    { id: 13, name: 'v-card : ts' },
-                    { id: 14, name: 'v-window : ts' },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 4,
-          name: 'Downloads :',
-          children: [
-            { id: 16, name: 'October : pdf' },
-            { id: 17, name: 'November : pdf' },
-            { id: 18, name: 'Tutorial : html' },
-          ],
-        },
-        {
-          id: 5,
-          name: 'Videos :',
-          children: [
-            {
-              id: 20,
-              name: 'Tutorials :',
-              children: [
-                { id: 21, name: 'Basic layouts : mp4' },
-                { id: 22, name: 'Advanced techniques : mp4' },
-                { id: 23, name: 'All about app : dir' },
-              ],
-            },
-            { id: 24, name: 'Intro : mov' },
-            { id: 25, name: 'Conference introduction : avi' },
-          ],
-        },
-      ],
+      // 推荐课程
+      items: [0,1,2,3,4],
+      // 课程信息
       courseInfo: {
         title: '',
         desc: '',
@@ -234,11 +193,20 @@ export default {
           avatar: '',
         }
       },
+      // 课程评价数组
       courseComment: [],
+      // 评价条数
       commentCount: 0,
+      // 评级总星级
       commentTotalStar: 0,
+      // 评价总分
       commentScore: 0,
-      courseId: 0
+      // 课程id
+      courseId: 0,
+      // 是否显示提示消息
+      snack_bar: false,
+      // 提示消息
+      snack_notice: ''
     }
   },
   created() {
@@ -246,23 +214,39 @@ export default {
     this.getCourseInfo(this.courseId)
     this.getCourseComment(this.courseId)
     this.queryIsInvolved()
+    // 获取课程目录结构
     this.$store.dispatch('getCatalogue',{'cid': this.courseId})
   },
   methods: {
+    // 已登录且已参加处理
     pushLearning() {
       this.$router.push({path: '/learn', query: {'cid': String(this.courseId)}})
     },
+    // 查询用户已登录状态下是否参加该课程
     async queryIsInvolved() {
       const {data: res} = await this.$axios.post('course/getUserCourseRelation',{'uid': this.uid,'cid':this.courseId})
-      if (res.status === 200) {
+      if (res.status === 200) { // 用户已参加
         this.isInvolved = res.data.flag
-      } else {
+      } else { // 用户未参加
         this.isInvolved = false
       }
     },
+    // 用户未登录或未参加处理
     async participateCourse() {
-
+      if (this.isLogin) { // 已登录状态下
+        // 可发送请求，用户加入学习
+        const {data: res} = await this.$axios.post('course/joinCourse', {'uid': this.uid, 'cid':this.cid})
+        if (res.status === 200) {
+          this.snack_notice = '加入成功'
+          this.snack_bar = true
+        }
+      } else { // 用户未登录
+        // 提示用户先登录
+        this.snack_bar = '用户未登录'
+        this.snack_bar = true
+      }
     },
+    // 根据状态选择处理
     enterOrInvolve() {
       if (this.isInvolved) {
         this.pushLearning()
@@ -270,6 +254,9 @@ export default {
         this.participateCourse()
       }
     },
+    /*
+    * 获取课程信息
+    * */
     async getCourseInfo(cid) {
       const {data: res} = await this.$axios.post('course/getCourseBriefInfo', {'id': cid})
       if (res.status === 200) {
@@ -280,17 +267,22 @@ export default {
         this.courseInfo.user.avatar = res.data.user.avatar
       }
     },
+    /*
+    * 获取评价
+    * */
     async getCourseComment(cid) {
       const reducer = (previous, current) => previous + current.total_star
       const {data: res} = await this.$axios.post("course/getCourseEvaluation?", {'cid': cid})
       if (res.status === 200) {
         this.courseComment = res.data
         this.commentCount = res.data.length
-        if (this.commentCount === 0) {
+        if (this.commentCount === 0) { // 没有任何评价
           this.commentScore = '暂无评价'
           this.commentTotalStar = 0
-        } else {
+        } else { // 存在评价
+          // 计算评价总得分
           this.commentScore = (res.data.reduce(reducer, 0) / this.commentCount / 2).toFixed(1)
+          // 计算评价总星级，与评分一致
           this.commentTotalStar = this.commentScore
         }
       }
@@ -298,7 +290,8 @@ export default {
   },
   computed: {
     ...mapState([
-        "courseCatalogue"
+        "courseCatalogue",
+        "isLogin"
     ]),
     ...mapGetters([
         "uid"

@@ -11,9 +11,11 @@
             <v-container id="login-container">
               <v-row justify="center">
                 <v-col cols="10">
+<!--                  账号输入框-->
                   <v-text-field v-model="loginForm.phone" label="请输入手机号" required outlined prepend-inner-icon="mdi-cellphone"></v-text-field>
                 </v-col>
                 <v-col cols="10">
+<!--                  密码输入框-->
                   <v-text-field v-model="loginForm.pwd" label="请输入密码" type="password" required outlined prepend-inner-icon="mdi-lock"></v-text-field>
                 </v-col>
                 <v-col cols="10">
@@ -48,20 +50,17 @@ export default {
         // 默认为学生
         role: 1
       },
-      rules: {
-        required: value => !!value || '不能为空',
-        phone: value => {
-          const pattern = /^1[3-9]\d{9}$/
-          return pattern.test(value) || '手机号不合法'
-        }
-      },
+      // 是否显示对话框
       dialog: false
     }
   },
   methods: {
+    // 登录
     login() {
       this.$store.dispatch('loginUser',this.loginForm)
+      // 关闭对话框
       this.dialog = false
+      // 父组件的对话框状态保持一致
       this.$emit("updateOverlay", this.dialog)
     }
   },

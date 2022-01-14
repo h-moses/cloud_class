@@ -21,9 +21,10 @@ const _axios = axios.create(config);
 _axios.interceptors.request.use(
   function(config) {
     // Do something before request is sent
-    if (config.type && config.type === 'json') {
+    if (config.type && config.type === 'json') { // 传递application/json格式的数据
       return config
     }
+    // 传递form-data格式的数据
     config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     config.data = qs.stringify(config.data)
     return config;

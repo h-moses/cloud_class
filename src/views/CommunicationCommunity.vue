@@ -15,6 +15,7 @@ export default {
   components: {DynamicItemComponent},
   data() {
     return {
+      // 动态数组
       dynamicList: []
     }
   },
@@ -22,6 +23,9 @@ export default {
     this.getAllDynamic()
   },
   methods: {
+    /*
+    * 获取动态数组
+    * */
     async getAllDynamic() {
       const {data: res} = await this.$axios.get('find/getAllShare')
       if (res.status === 200) {

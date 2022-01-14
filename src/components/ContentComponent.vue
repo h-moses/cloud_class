@@ -4,6 +4,7 @@
       <div class="text-h6">课件</div>
     </div>
     <div class="m-learnChapterNormal">
+<!--      树形图-->
       <v-treeview :active.sync="video" :items="catalogue" activatable @update:active="playVideo" return-object hoverable open-on-click>
 <!--        视频的图标-->
         <template v-slot:prepend="{item}">
@@ -23,6 +24,7 @@ export default {
     }
   },
   methods: {
+    // 导航至视频播放页面
     playVideo() {
       this.$router.push({name: 'VideoComponent', query: {'cid': this.$route.query.cid, 'sname': this.video[0].name}})
     }

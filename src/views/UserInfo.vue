@@ -2,12 +2,15 @@
   <v-main id="user-info">
     <v-img class="top-back" width="100%" height="220" :src="topBack" />
     <div class="userinfo-container">
+<!--      用户头像-->
       <v-avatar class="u-img" left width="102" height="102">
         <v-img :src="this.userAvatar" :lazy-src="this.lazySrc" />
       </v-avatar>
+<!--      用户昵称-->
       <div class="u-name">
         <span>{{this.userName}}</span>
       </div>
+<!--      用户身份-->
       <div class="u-tag">
         <span>学生 | 浙江理工 - 信息学院</span>
       </div>
@@ -22,11 +25,14 @@
     <div class="home-content">
       <div class="main-content">
         <div class="main-box">
+<!--          标签头-->
           <v-tabs class="module-tabs" v-model="selectedTab" color="success">
             <v-tabs-slider color="#00c758"></v-tabs-slider>
             <v-tab v-for="item in module_tabs" :key="item">{{item}}</v-tab>
           </v-tabs>
+<!--          标签页-->
           <v-tabs-items v-model="selectedTab">
+<!--            已参加课程-->
             <v-tab-item>
               <template #default>
                 <v-row justify="center">
@@ -36,6 +42,7 @@
                 </v-row>
               </template>
             </v-tab-item>
+<!--            已参加专栏-->
             <v-tab-item>
               <template #default>
                 <div class="empty-guide flex justify-center">
@@ -61,9 +68,11 @@ export default {
   components: {CourseIntroductionCard},
   data() {
     return {
+      //背景图片
       topBack: 'http://edu-image.nosdn.127.net/6cc94d6565544f47ac9c2342ab7e735e.png?imageView&quality=100',
       selectedTab: null,
       module_tabs: ['课程','专栏'],
+      // 无任何专栏时的图片
       empty_img: 'https://edu-image.nosdn.127.net/47c362405a924f0e8df46544eb4bb51d.png?imageView&quality=100',
       involvedCourses: []
     }
@@ -72,6 +81,9 @@ export default {
     this.getInvolvedCourse()
   },
   methods: {
+    /*
+    * 获取用户已参加的课程
+    * */
     async getInvolvedCourse() {
       const {data:res} = await this.$axios.post('course/getLearntCourse?', {'uid': this.uid})
       if (res.status === 200 && res.data !== null) {
